@@ -1,5 +1,19 @@
 # Changelog
 
+## v7.6.4
+
+### Changed
+
+- Bumped the internal JSFX plugin metadata from v7.6.2 to v7.6.4.
+- Added `src/ziviSpaceEcho_v7_6_4.jsfx` as the current versioned release file.
+- Updated repository metadata to align the plugin version with the public GitHub release series.
+
+### Preserved
+
+- DSP unchanged from v7.6.2.
+- Graphical interface unchanged.
+- Zenodo concept DOI remains unchanged.
+
 ## v7.6.3
 
 ### Added
