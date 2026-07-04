@@ -1,8 +1,3 @@
----
-layout: default
-title: Installation
----
-
 # Installation
 
 ## Requirements
@@ -13,24 +8,23 @@ title: Installation
 
 ## Install
 
-1. Download or clone this repository.
-2. Locate:
+1. Download:
 
 ```text
-src/SpaceEcho_RE201_STABLE.jsfx
+src/ziviSpaceEcho.jsfx
 ```
 
-3. Open REAPER.
-4. Choose:
+2. Open REAPER.
+3. Choose:
 
 ```text
 Options → Show REAPER resource path in explorer/finder
 ```
 
-5. Open the `Effects` folder.
-6. Copy the `.jsfx` file into the `Effects` folder.
-7. Restart REAPER, or refresh the FX browser.
-8. Add the plugin to a track.
+4. Open the `Effects` folder.
+5. Copy `ziviSpaceEcho.jsfx` into the `Effects` folder.
+6. Restart REAPER or refresh the FX browser.
+7. Search for `ziviSpaceEcho` in the FX browser.
 
 ## Updating
 

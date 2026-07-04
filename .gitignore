@@ -1,5 +1,9 @@
 .DS_Store
 Thumbs.db
+site/
+.venv/
+__pycache__/
+*.pyc
 *.RPP-bak
 *.autosave
 *.tmp

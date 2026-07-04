@@ -1,24 +1,25 @@
----
-layout: default
-title: Developer Notes
----
-
 # Developer Notes
 
 ## Format
 
-The plugin is written as a REAPER JSFX effect using EEL2 syntax.
+ziviSpaceEcho is written as a REAPER JSFX effect using EEL2 syntax.
 
 Main source file:
 
 ```text
-src/SpaceEcho_RE201_STABLE.jsfx
+src/ziviSpaceEcho.jsfx
 ```
 
 Versioned source file:
 
 ```text
-src/SpaceEcho_RE201_PremiumCabinet_RobustMouseEditor_v7_6_1.jsfx
+src/ziviSpaceEcho_v7_6_2.jsfx
+```
+
+Legacy alias:
+
+```text
+src/SpaceEcho_RE201_STABLE.jsfx
 ```
 
 ## Architecture summary
@@ -53,11 +54,9 @@ The custom UI uses:
 - bottom control strip;
 - mouse-only modal editor.
 
-The mouse-only editor avoids using hardware keyboard capture because REAPER may route key events to host commands.
+The mouse-only editor avoids hardware keyboard capture because REAPER may route key events to host commands.
 
 ## Known JSFX constraints
-
-JSFX `@gfx` is powerful, but it does not offer the same modal event isolation as a full native VST/AU GUI. For that reason, this interface intentionally avoids keyboard-based editing.
 
 Be careful with:
 

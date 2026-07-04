@@ -1,15 +1,10 @@
----
-layout: default
-title: Complete Manual
----
+# ziviSpaceEcho Complete Manual
 
-# Complete Manual
-
-![Main interface](assets/images/screenshot-main.png)
+![ziviSpaceEcho main interface](assets/images/screenshot-main.png)
 
 ## 1. Concept
 
-This JSFX is designed as a musical tape echo and spring reverb instrument for REAPER.
+**ziviSpaceEcho** is a musical tape echo and spring reverb instrument for REAPER.
 
 It follows the workflow of a classic multi-head tape echo unit:
 
@@ -201,15 +196,3 @@ The plugin includes a UI mode parameter:
 - Native Controls
 
 Use native controls if you need standard REAPER automation editing or a fallback UI.
-
-## 8. Screenshot checklist
-
-| Section | File name |
-|---|---|
-| Full plugin | `screenshot-main.png` |
-| Header | `screenshot-header.png` |
-| Mode selector | `screenshot-mode-selector.png` |
-| Main grid | `screenshot-main-grid.png` |
-| Mouse editor | `screenshot-editor.png` |
-| Bottom strip | `screenshot-bottom-bar.png` |
-| REAPER track setup | `screenshot-reaper-track.png` |

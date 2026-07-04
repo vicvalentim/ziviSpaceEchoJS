@@ -1,9 +1,4 @@
----
-layout: default
-title: Parameter Reference
----
-
-# Parameter Reference
+# ziviSpaceEcho Parameter Reference
 
 ## Mode and timing
 

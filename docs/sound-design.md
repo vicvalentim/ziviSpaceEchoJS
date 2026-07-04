@@ -1,9 +1,4 @@
----
-layout: default
-title: Sound Design Guide
----
-
-# Sound Design Guide
+# ziviSpaceEcho Sound Design Guide
 
 ## Classic vocal slap
 

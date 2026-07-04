@@ -1,0 +1,146 @@
+:root {
+  --zivi-green-900: #07110a;
+  --zivi-green-800: #102516;
+  --zivi-green-700: #17351d;
+  --zivi-cream: #f3e8bd;
+  --zivi-muted: #c7d0a6;
+  --zivi-amber: #e7b64a;
+  --zivi-cyan: #59c7e6;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #07110a;
+  --md-default-fg-color: #f3e8bd;
+  --md-default-fg-color--light: #c7d0a6;
+  --md-primary-fg-color: #17351d;
+  --md-accent-fg-color: #e7b64a;
+  --md-code-bg-color: #0d1e12;
+}
+
+.md-header,
+.md-tabs {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(231,182,74,0.18), transparent 24%),
+    linear-gradient(135deg, #07110a 0%, #17351d 58%, #07110a 100%);
+}
+
+.md-header__title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.zivi-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+  gap: 1.6rem;
+  align-items: center;
+  margin: 1rem 0 2rem;
+}
+
+.zivi-hero-text h1 {
+  margin-bottom: 0.3rem;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.zivi-subtitle {
+  font-size: 1.15rem;
+  color: var(--zivi-muted);
+  margin: 0.4rem 0 1rem;
+}
+
+.zivi-hero-img,
+.zivi-card,
+.zivi-gallery-card,
+.zivi-callout {
+  border: 1px solid rgba(231, 182, 74, 0.32);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(23,53,29,0.88), rgba(7,17,10,0.92));
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32);
+}
+
+.zivi-hero-img {
+  padding: 0.85rem;
+}
+
+.zivi-hero-img img,
+.zivi-gallery-card img,
+.md-content img {
+  max-width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(231, 182, 74, 0.20);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+}
+
+.zivi-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.72rem;
+  margin: 1.15rem 0;
+}
+
+.zivi-button {
+  display: inline-block;
+  padding: 0.72rem 1.05rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e9c05c 0%, #c9922c 100%);
+  color: #07110a !important;
+  font-weight: 800;
+  text-decoration: none;
+  border: 1px solid rgba(78, 45, 8, 0.35);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.20);
+}
+
+.zivi-button.secondary {
+  background: linear-gradient(180deg, #214f2a 0%, #123119 100%);
+  color: var(--zivi-cream) !important;
+  border-color: rgba(231, 182, 74, 0.35);
+}
+
+.zivi-button.info {
+  background: linear-gradient(180deg, #6fd3ea 0%, #2c879d 100%);
+  color: #061014 !important;
+}
+
+.zivi-feature-grid,
+.zivi-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+
+.zivi-card,
+.zivi-gallery-card,
+.zivi-callout {
+  padding: 1rem;
+}
+
+.zivi-card strong,
+.zivi-gallery-card strong {
+  color: var(--zivi-amber);
+}
+
+.zivi-badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.25rem 0.62rem;
+  margin: 0.15rem 0.2rem 0.15rem 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: rgba(231,182,74,0.15);
+  color: var(--zivi-cream);
+  border: 1px solid rgba(231,182,74,0.30);
+}
+
+@media (max-width: 880px) {
+  .zivi-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .zivi-button {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,6 +1,0 @@
-Place your exported PNG screenshot here.
-
-Expected file name:
-screenshot-bottom-bar.png
-
-Referenced by README/docs.

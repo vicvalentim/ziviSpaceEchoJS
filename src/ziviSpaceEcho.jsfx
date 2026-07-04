@@ -1,7 +1,7 @@
-desc:Space Echo RE-201 Inspired - Premium Cabinet + Robust Mouse Editor v7.6.1
+desc:ziviSpaceEcho - RE-201 Inspired Tape Echo + Spring Reverb v7.6.2
 author:Victor Valentim / ChatGPT
-version:7.6.1
-tags:delay echo tape reverb spring saturation RE-201 physical virtual ips inches proportional-heads stable-memory granular-spring aligned-cabinet-skin aligned-cabinet-skin balanced-cabinet-skin
+version:7.6.2
+tags:ziviSpaceEcho reaper jsfx eel2 delay echo tape reverb spring saturation RE-201 multi-head physical virtual ips inches stable-memory granular-spring premium-cabinet mouse-editor
 options:maxmem=64000000
 
 in_pin:Left input
@@ -10,7 +10,7 @@ out_pin:Left output
 out_pin:Right output
 
 // ============================================================
-// RE-201 INSPIRED JSFX - v7.6.1
+// ziviSpaceEcho - RE-201 INSPIRED JSFX - v7.6.2
 //
 // Core rule:
 //   one tape / one motor / one record head / three playback heads
@@ -2783,9 +2783,9 @@ ui_bevel_outline(header_x, header_y, header_w, header_h, 10, 0);
 gfx_set(0.96, 0.78, 0.32, 0.16); gfx_line(header_x+22, header_y+header_h-12, header_x+header_w-22, header_y+header_h-12, 1);
 gfx_set(0.88, 0.92, 0.83, 1);
 gfx_setfont(2, "Arial", 48, 'b');
-gfx_x = header_x + 28; gfx_y = header_y + 34; gfx_drawstr("SPACE ECHO");
+gfx_x = header_x + 28; gfx_y = header_y + 34; gfx_drawstr("ziviSpaceEcho");
 gfx_setfont(3, "Arial", 18, 'b');
-gfx_x = header_x + 468; gfx_y = header_y + 44; gfx_drawstr("RE-201 inspired - premium cabinet + robust mouse editor v7.6.1");
+gfx_x = header_x + 468; gfx_y = header_y + 44; gfx_drawstr("RE-201 inspired tape echo + spring reverb v7.6.2");
 
 ui_x = header_x + header_w - 188;
 ui_y = header_y + 34;

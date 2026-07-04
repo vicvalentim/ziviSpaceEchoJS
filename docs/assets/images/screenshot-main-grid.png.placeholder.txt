@@ -1,6 +1,0 @@
-Place your exported PNG screenshot here.
-
-Expected file name:
-screenshot-main-grid.png
-
-Referenced by README/docs.
