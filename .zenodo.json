@@ -1,7 +1,7 @@
 {
   "title": "ziviSpaceEcho",
   "upload_type": "software",
-  "description": "ziviSpaceEcho is a REAPER JSFX plugin for RE-201 inspired tape echo, spring reverb, dub delay textures and unstable motor-style modulation. It combines a multi-head tape echo structure, a parallel spring reverb branch, tape coloration controls, motor behavior controls and a custom cabinet-style graphical interface.",
+  "description": "ziviSpaceEcho is a REAPER JSFX plugin for RE-201 inspired tape echo, spring reverb, dub delay textures and unstable motor-style modulation. It combines a multi-head tape echo structure, a parallel spring reverb branch, tape coloration controls, motor behavior controls and a custom cabinet-style graphical interface. Generative AI assistance, including GitHub Copilot and ChatGPT (GPT-5.5 Thinking) by OpenAI, used during development, documentation and release organization is disclosed in the repository file AI_USAGE.md.",
   "creators": [
     {
       "name": "Valentim, Victor Hugo Soares",
