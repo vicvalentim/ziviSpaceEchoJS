@@ -1,3 +1,7 @@
+---
+hide:
+  - navigation
+---
 <div class="zivi-hero">
   <div class="zivi-hero-text">
     <p class="zivi-kicker">REAPER / JSFX · Tape echo · Spring reverb</p>

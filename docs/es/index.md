@@ -1,3 +1,7 @@
+---
+hide:
+  - navigation
+---
 <div class="zivi-hero">
   <div class="zivi-hero-text">
     <p class="zivi-kicker">REAPER / JSFX · Echo de cinta · Reverb de muelles</p>
