@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ziviSpaceEcho logo">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#11361f"/>
+      <stop offset="55%" stop-color="#07170d"/>
+      <stop offset="100%" stop-color="#041008"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="464" height="464" rx="110" fill="url(#g)" stroke="#e6b44b" stroke-width="16"/>
+  <circle cx="256" cy="232" r="134" fill="none" stroke="#e6b44b" stroke-width="10" opacity=".78"/>
+  <circle cx="170" cy="132" r="16" fill="#e6b44b"/>
+  <circle cx="262" cy="100" r="16" fill="#e6b44b"/>
+  <circle cx="348" cy="140" r="16" fill="#e6b44b"/>
+  <text x="256" y="318" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="124" font-weight="900" fill="#f7eeca">zSE</text>
+  <text x="256" y="392" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="6" fill="#6cd3e6">JSFX</text>
+</svg>

@@ -12,19 +12,19 @@
         <meta name="author" content="Victor Valentim">
       
       
-        <link rel="canonical" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/demos/">
+        <link rel="canonical" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/parameters/">
       
       
-        <link rel="prev" href="../gallery/">
+        <link rel="prev" href="../manual/">
       
       
-        <link rel="next" href="../developer-notes/">
+        <link rel="next" href="../sound-design/">
       
       
         
-          <link rel="alternate" href="../../demos/" hreflang="en">
+          <link rel="alternate" href="../../parameters/" hreflang="en">
         
-          <link rel="alternate" href="../../pt-BR/demos/" hreflang="pt-BR">
+          <link rel="alternate" href="../../pt-BR/parameters/" hreflang="pt-BR">
         
           <link rel="alternate" href="./" hreflang="es">
         
@@ -35,7 +35,7 @@
     
     
       
-        <title>Demos - ziviSpaceEcho</title>
+        <title>Referencia de parámetros - ziviSpaceEcho</title>
       
     
     
@@ -94,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#demos-de-audio-video" class="md-skip">
+        <a href="#referencia-de-parametros" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -129,7 +129,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Demos
+              Referencia de parámetros
             
           </span>
         </div>
@@ -176,13 +176,13 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="../../demos/" hreflang="en" class="md-select__link">
+            <a href="../../parameters/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="../../pt-BR/demos/" hreflang="pt-BR" class="md-select__link">
+            <a href="../../pt-BR/parameters/" hreflang="pt-BR" class="md-select__link">
               Português (BR)
             </a>
           </li>
@@ -347,10 +347,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../manual/" class="md-tabs__link">
           
   
@@ -386,11 +388,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../demos/" class="md-tabs__link">
         
   
   
@@ -585,28 +585,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -624,7 +627,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -667,10 +670,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../parameters/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia de parámetros
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -686,6 +716,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#modo-y-tiempo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo y tiempo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#echo-mix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Echo / Mix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cinta-y-motor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cinta y motor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reverb-de-muelles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverb de muelles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#salida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salida
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -757,37 +862,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Demos
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../demos/" class="md-nav__link">
         
   
   
@@ -803,37 +881,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Tabla de contenidos
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#demos-planeadas" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Demos planeadas
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1038,10 +1085,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#demos-planeadas" class="md-nav__link">
+  <a href="#modo-y-tiempo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Demos planeadas
+        Modo y tiempo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#echo-mix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Echo / Mix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cinta-y-motor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cinta y motor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reverb-de-muelles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverb de muelles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#salida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salida
       
     </span>
   </a>
@@ -1066,6 +1157,46 @@
   
 
 
+  <nav class="md-path" aria-label="Navegación" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../" class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Inicio
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../manual/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Manual
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
@@ -1073,7 +1204,7 @@
 
 
   
-    <a href="https://github.com/vicvalentim/ziviSpaceEchoJS/edit/main/docs/es/demos.md" title="Editar esta página" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/vicvalentim/ziviSpaceEchoJS/edit/main/docs/es/parameters.md" title="Editar esta página" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1081,41 +1212,226 @@
   
 
 
-<h1 id="demos-de-audio-video">Demos de audio / video<a class="headerlink" href="#demos-de-audio-video" title="Permanent link">&para;</a></h1>
-<p>Aún no se han producido demostraciones profesionales de audio y video.</p>
-<p>Esta página permanece en la documentación para recibir ejemplos curados en versiones futuras sin alterar la estructura pública del sitio.</p>
-<h2 id="demos-planeadas">Demos planeadas<a class="headerlink" href="#demos-planeadas" title="Permanent link">&para;</a></h2>
+<h1 id="referencia-de-parametros">Referencia de parámetros<a class="headerlink" href="#referencia-de-parametros" title="Permanent link">&para;</a></h1>
+<p>Esta página documenta los parámetros principales de ziviSpaceEcho v7.6.4.</p>
+<h2 id="modo-y-tiempo">Modo y tiempo<a class="headerlink" href="#modo-y-tiempo" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Demo</th>
-<th>Finalidad</th>
+<th>Control</th>
+<th>Valores / rango</th>
+<th style="text-align: right;">Predeterminado</th>
+<th>Descripción</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Slap vocal clásico</td>
-<td>Delay manual corto con poco feedback.</td>
+<td>Mode Selector</td>
+<td>1–12</td>
+<td style="text-align: right;">1</td>
+<td>Selecciona cabezales y ruteo de reverb.</td>
 </tr>
 <tr>
-<td>Dub feedback wash</td>
-<td>Performance con feedback intenso y múltiples cabezales.</td>
+<td>Timing Mode</td>
+<td>RE-201 Motor / Manual ms / Tempo Sync / Tap Tempo</td>
+<td style="text-align: right;">RE-201 Motor</td>
+<td>Selecciona la estrategia temporal.</td>
 </tr>
 <tr>
-<td>Echo ambiente con muelles</td>
-<td>Texturas largas con echo y reverb.</td>
+<td>Repeat Rate</td>
+<td>0–100%</td>
+<td style="text-align: right;">50%</td>
+<td>Control de velocidad de motor.</td>
 </tr>
 <tr>
-<td>Cinta sucia</td>
-<td>Saturación, ruido e inestabilidad.</td>
+<td>Manual Time</td>
+<td>20–2000 ms</td>
+<td style="text-align: right;">300 ms</td>
+<td>Tiempo del cabezal principal.</td>
 </tr>
 <tr>
-<td>Reverb only</td>
-<td>Uso de la posición 12 como reverb independiente.</td>
+<td>Sync Division</td>
+<td>2/1 a 1/32</td>
+<td style="text-align: right;">1/4</td>
+<td>División sincronizada al tempo.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="echo-mix">Echo / Mix<a class="headerlink" href="#echo-mix" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th style="text-align: right;">Rango</th>
+<th style="text-align: right;">Predeterminado</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intensity</td>
+<td style="text-align: right;">0–110%</td>
+<td style="text-align: right;">35%</td>
+<td>Intensidad de feedback/repeticiones.</td>
 </tr>
 <tr>
-<td>Video walkthrough</td>
-<td>Instalación, controles, modos y ejemplos sonoros.</td>
+<td>Echo Volume</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">45%</td>
+<td>Nivel del echo.</td>
+</tr>
+<tr>
+<td>Reverb Volume</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">22%</td>
+<td>Nivel de reverb.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cinta-y-motor">Cinta y motor<a class="headerlink" href="#cinta-y-motor" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th style="text-align: right;">Rango / valores</th>
+<th style="text-align: right;">Predeterminado</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bass</td>
+<td style="text-align: right;">-12 a +12 dB</td>
+<td style="text-align: right;">0 dB</td>
+<td>Graves del echo.</td>
+</tr>
+<tr>
+<td>Treble</td>
+<td style="text-align: right;">-12 a +12 dB</td>
+<td style="text-align: right;">0 dB</td>
+<td>Agudos del echo.</td>
+</tr>
+<tr>
+<td>Drive</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">10%</td>
+<td>Saturación.</td>
+</tr>
+<tr>
+<td>Noise</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">8%</td>
+<td>Ruido de cinta.</td>
+</tr>
+<tr>
+<td>Condition</td>
+<td style="text-align: right;">-100 a +100</td>
+<td style="text-align: right;">0</td>
+<td>Estado general de la máquina/cinta.</td>
+</tr>
+<tr>
+<td>W/F Motor Discrepancy</td>
+<td style="text-align: right;">-100 a +100</td>
+<td style="text-align: right;">0</td>
+<td>Comportamiento wow/flutter.</td>
+</tr>
+<tr>
+<td>Motor Torque</td>
+<td style="text-align: right;">-100 a +100</td>
+<td style="text-align: right;">0</td>
+<td>Respuesta del motor.</td>
+</tr>
+<tr>
+<td>LFO Rate</td>
+<td style="text-align: right;">0.05–12 Hz</td>
+<td style="text-align: right;">0.60 Hz</td>
+<td>Velocidad del LFO.</td>
+</tr>
+<tr>
+<td>LFO Wave</td>
+<td style="text-align: right;">Sine / Triangle / Ramp / Square / Random</td>
+<td style="text-align: right;">Sine</td>
+<td>Forma de onda de modulación.</td>
+</tr>
+<tr>
+<td>LFO Depth</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">0%</td>
+<td>Profundidad de modulación.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reverb-de-muelles">Reverb de muelles<a class="headerlink" href="#reverb-de-muelles" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th style="text-align: right;">Rango</th>
+<th style="text-align: right;">Predeterminado</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spring Dwell</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">35%</td>
+<td>Excitación/drive de la rama de muelles.</td>
+</tr>
+<tr>
+<td>Spring Decay</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">45%</td>
+<td>Duración de la cola.</td>
+</tr>
+<tr>
+<td>Spring Drip</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">20%</td>
+<td>Carácter percutivo/transiente.</td>
+</tr>
+<tr>
+<td>Spring Bounce</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">35%</td>
+<td>Movimiento/rebote.</td>
+</tr>
+<tr>
+<td>Spring Grain</td>
+<td style="text-align: right;">0–100%</td>
+<td style="text-align: right;">30%</td>
+<td>Textura granular.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="salida">Salida<a class="headerlink" href="#salida" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Valores / rango</th>
+<th style="text-align: right;">Predeterminado</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Output</td>
+<td>L Low / M Medium / H High</td>
+<td style="text-align: right;">M Medium</td>
+<td>Comportamiento de nivel de salida.</td>
+</tr>
+<tr>
+<td>Stereo Mode</td>
+<td>Single Original-like / Dual Stereo</td>
+<td style="text-align: right;">Single Original-like</td>
+<td>Ruta única o comportamiento estéreo dual.</td>
+</tr>
+<tr>
+<td>Master</td>
+<td>-24 a +12 dB</td>
+<td style="text-align: right;">-3 dB</td>
+<td>Ganancia final de salida.</td>
 </tr>
 </tbody>
 </table>
@@ -1156,7 +1472,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Pie" >
         
           
-          <a href="../gallery/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Galería">
+          <a href="../manual/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Panorama general">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1166,20 +1482,20 @@
                 Anterior
               </span>
               <div class="md-ellipsis">
-                Galería
+                Panorama general
               </div>
             </div>
           </a>
         
         
           
-          <a href="../developer-notes/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Notas de desarrollo">
+          <a href="../sound-design/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Guía de diseño sonoro">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Siguiente
               </span>
               <div class="md-ellipsis">
-                Notas de desarrollo
+                Guía de diseño sonoro
               </div>
             </div>
             <div class="md-footer__button md-icon">
