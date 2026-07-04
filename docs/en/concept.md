@@ -1,7 +1,7 @@
 # Concept
 
 <figure class="zivi-figure">
-  <img src="../assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
+  <img src="/assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
   <figcaption>The plugin is organized as a performance cabinet: mode selection, timing, tape behavior, spring reverb and output control remain visible together.</figcaption>
 </figure>
 
