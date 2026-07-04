@@ -1,5 +1,6 @@
 desc:ziviSpaceEcho - RE-201 Inspired Tape Echo + Spring Reverb v7.6.2
-author:Victor Valentim / ChatGPT
+author:Victor Valentim
+// Generative AI assistance is disclosed in AI_USAGE.md.
 version:7.6.2
 tags:ziviSpaceEcho reaper jsfx eel2 delay echo tape reverb spring saturation RE-201 multi-head physical virtual ips inches stable-memory granular-spring premium-cabinet mouse-editor
 options:maxmem=64000000
