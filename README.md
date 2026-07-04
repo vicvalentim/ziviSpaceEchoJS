@@ -2,9 +2,9 @@
 
 **RE-201 inspired tape echo + spring reverb for REAPER / JSFX.**
 
-[![Release](https://img.shields.io/github/v/release/vicvalentim/ziviSpaceEchoJS?label=release)](https://github.com/vicvalentim/ziviSpaceEchoJS/releases)
-[![Documentation](https://img.shields.io/badge/docs-online-2f6f3e)](https://vicvalentim.github.io/ziviSpaceEchoJS/)
-[![License](https://img.shields.io/github/license/vicvalentim/ziviSpaceEchoJS)](LICENSE)
+[![Release](https://img.shields.io/badge/release-v7.6.2-2f6f3e)](https://github.com/vicvalentim/ziviSpaceEchoJS/releases/tag/v7.6.2)
+[![Documentation](https://img.shields.io/badge/documentation-online-2f6f3e)](https://vicvalentim.github.io/ziviSpaceEchoJS/)
+[![License](https://img.shields.io/badge/license-MIT-2f6f3e)](LICENSE)
 
 ![ziviSpaceEcho main interface](docs/assets/images/screenshot-main.png)
 
