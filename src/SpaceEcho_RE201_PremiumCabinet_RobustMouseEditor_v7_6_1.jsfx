@@ -1,0 +1,3286 @@
+desc:Space Echo RE-201 Inspired - Premium Cabinet + Robust Mouse Editor v7.6.1
+author:Victor Valentim / ChatGPT
+version:7.6.1
+tags:delay echo tape reverb spring saturation RE-201 physical virtual ips inches proportional-heads stable-memory granular-spring aligned-cabinet-skin aligned-cabinet-skin balanced-cabinet-skin
+options:maxmem=64000000
+
+in_pin:Left input
+in_pin:Right input
+out_pin:Left output
+out_pin:Right output
+
+// ============================================================
+// RE-201 INSPIRED JSFX - v7.6.1
+//
+// Core rule:
+//   one tape / one motor / one record head / three playback heads
+//   plus a spring reverb branch in parallel.
+//
+// This is not a component-level clone.
+// It is a musically useful tape-machine model informed by the
+// RE-201 operating/service logic.
+//
+// Physical transport model:
+//   - tape speed is modeled in ips (inches per second);
+//   - tape loop length is modeled in inches;
+//   - playback heads are modeled as distances from the record head;
+//   - head delay = head distance / tape speed;
+//   - loop time  = tape length / tape speed;
+//   - active tape capacity is stable during speed changes within maxmem.
+//
+// Timing modes:
+///   0 RE-201 Motor : Repeat Rate controls physical RE-201 tape speed.
+///   1 Manual ms    : requested ms is converted to exact virtual tape speed.
+///   2 Tempo Sync   : REAPER tempo/note value is converted to exact virtual tape speed.
+///   3 Tap Tempo    : tap interval is converted to exact virtual tape speed.
+//
+// Important:
+//   H1/H2/H3 are always derived from one shared virtual tape geometry.
+//   They are not independent delays.
+// ============================================================
+
+// ------------------------- BASIC PANEL -------------------------
+
+slider1:mode_sel=0<0,11,1{1 H1,2 H2,3 H3,4 H2+H3,5 H1+Rev,6 H2+Rev,7 H3+Rev,8 H1+H2+Rev,9 H2+H3+Rev,10 H1+H3+Rev,11 H1+H2+H3+Rev,12 Reverb Only}>Mode Selector
+
+slider2:time_mode=0<0,3,1{RE-201 Motor,Manual ms,Tempo Sync,Tap Tempo}>Timing Mode
+slider3:repeat_rate=50<0,100,1>Repeat Rate - Motor Speed (%)
+slider4:manual_ms=300<20,2000,1>Manual Time - Leading Head (ms)
+// Sync range is deliberately operational, not absurdly wide.
+slider5:sync_div=3<0,9,1{2/1,1/1,1/2,1/4,1/4T,1/8,1/8T,1/16,1/16T,1/32}>Sync Division
+slider6:motor_range=0<0,3,1{Reserved,Reserved,Reserved,Reserved}>-Reserved Motor Range
+
+slider7:intensity=35<0,110,1>Intensity (%)
+slider8:echo_vol=45<0,100,1>Echo Volume (%)
+slider9:reverb_vol=22<0,100,1>Reverb Volume (%)
+
+slider10:bass_db=0<-12,12,0.1>Bass - Echo Only (dB)
+slider11:treble_db=0<-12,12,0.1>Treble - Echo Only (dB)
+
+// ------------------------- ROUTING / LEVEL -------------------------
+
+slider12:input_type=0<0,2,1{Instrument,From P.A. Send,Mic High Gain}>Input
+slider13:input_db=0<-24,18,0.1>Input / Record Level (dB)
+slider14:inst_echo=0<0,1,1{Echo,Normal Dry Only}>Instrument Echo Switch
+slider15:echo_cancel=0<0,1,1{Effect On,Cancel Effects}>Echo Cancel
+slider16:output_sel=1<0,2,1{L Low,M Medium,H High}>H/M/L Output
+slider17:master_db=-3<-24,12,0.1>Master (dB)
+slider18:stereo_mode=0<0,1,1{Single Original-like,Dual Stereo}>Stereo Mode
+
+// ------------------------- EXPANDED PANEL -------------------------
+
+slider19:condition=0<-100,100,1>Condition (-Ideal / +Aged)
+slider20:wf_amt=0<-100,100,1>W/F Motor Discrepancy
+slider21:motor_torque=0<-100,100,1>Motor Torque
+slider22:low_cut=0<-100,100,1>Low Cut Playback Heads
+slider23:high_cut=0<-100,100,1>High Cut Playback Heads
+
+slider24:lfo_rate=0.60<0.05,12,0.01>Tape Speed LFO Rate (Hz)
+slider25:lfo_wave=0<0,4,1{Sine,Triangle,Ramp,Square,Random}>Tape Speed LFO Wave
+slider26:lfo_depth=0<0,100,1>Tape Speed LFO Depth (%)
+
+slider27:drive_amt=10<0,100,1>Preamp / Tape Drive (%)
+slider28:noise_amt=8<0,100,1>Tape Noise (%)
+
+slider29:tape_formula=0<0,1,1{Ampex 456,3M 996}>Tape Formula
+slider30:tape_age=0<0,1,1{Nova,Velha}>Tape Age
+slider31:tape_loop_size=1<0,2,1{Short 36 in,RT-1 72 in,Long 120 in}>Tape Loop Length
+
+slider32:rev_bass_db=0<-12,12,0.1>Reverb Bass (dB)
+slider33:rev_treble_db=0<-12,12,0.1>Reverb Treble (dB)
+
+// Calibration controls are hidden but available for fine tuning.
+slider34:h2_ratio_trim=1.000<0.90,1.10,0.001>-H2 Geometry Ratio Trim
+slider35:h3_ratio_trim=1.000<0.90,1.10,0.001>-H3 Geometry Ratio Trim
+
+// Safe mechanical spring color controls.
+// Conservative ranges: no runaway self-oscillation inside the spring tank.
+slider36:spring_dwell=35<0,100,1>Spring Dwell
+slider37:spring_decay=45<0,100,1>Spring Decay
+slider38:spring_drip=20<0,100,1>Spring Drip
+slider39:spring_bounce=35<0,100,1>Spring Bounce
+slider40:spring_grain=30<0,100,1>Spring Grain
+
+// Hidden UI mode. 0 = graphic skin only; 1 = show native JSFX controls.
+slider41:ui_mode=0<0,1,1{Graphic Skin,Native Controls}>-UI Mode
+
+@init
+
+pi = $pi;
+ln10_over_20 = 0.11512925464970229;
+
+// ------------------------- PHYSICAL CONSTANTS -------------------------
+
+CM_PER_IN = 2.54;
+
+// Service-manual physical reference:
+// 12-40 cm/sec approx. converted to inches per second.
+IPS_SERVICE_MIN = 12 / CM_PER_IN; // approx. 4.724 ips, lower service reference
+IPS_SERVICE_MAX = 40 / CM_PER_IN; // approx. 15.748 ips, upper service reference
+
+// UAD/Galaxy-style timing references used only for proportional calibration.
+// They define the musical/operational RE-201 timing ratio and head spacing.
+H1_REF_MIN_MS = 69;
+H1_REF_MAX_MS = 177;
+
+H2_REF_MIN_MS = 131;
+H2_REF_MAX_MS = 337;
+
+H3_REF_MIN_MS = 189;
+H3_REF_MAX_MS = 489;
+
+// The service manual gives a wider physical reference than the musical
+// delay ranges commonly documented for RE-201-style emulations.
+// Use the service maximum as fast speed, then derive the calibrated slow
+// speed by the geometric mean of H1/H2/H3 timing ratios.
+RE201_TIMING_RATIO =
+  exp((
+    log(H1_REF_MAX_MS / H1_REF_MIN_MS)
+    + log(H2_REF_MAX_MS / H2_REF_MIN_MS)
+    + log(H3_REF_MAX_MS / H3_REF_MIN_MS)
+  ) / 3);
+
+IPS_RE201_FAST = IPS_SERVICE_MAX;
+IPS_RE201_SLOW = IPS_RE201_FAST / RE201_TIMING_RATIO;
+
+// These names are kept as the operational physical range of RE-201 Motor.
+IPS_RE201_MIN = IPS_RE201_SLOW; // approx. 6.11 ips, calibrated operational slow
+IPS_RE201_MAX = IPS_RE201_FAST; // approx. 15.748 ips, service fast
+
+// Head-spacing ratios are derived by geometric mean across the short and
+// long endpoints, preserving proportional head geometry across the range.
+H2_RATIO_CAL =
+  exp((
+    log(H2_REF_MIN_MS / H1_REF_MIN_MS)
+    + log(H2_REF_MAX_MS / H1_REF_MAX_MS)
+  ) / 2);
+
+H3_RATIO_CAL =
+  exp((
+    log(H3_REF_MIN_MS / H1_REF_MIN_MS)
+    + log(H3_REF_MAX_MS / H1_REF_MAX_MS)
+  ) / 2);
+
+// Physical H1 distance from record head, in inches.
+// H2/H3 are derived from proportional calibration plus hidden trims.
+HEAD1_IN_BASE = (H1_REF_MIN_MS / 1000) * IPS_RE201_FAST;
+
+// Virtual exact timing boundaries for Manual ms / Sync / Tap.
+// The lower bound is normally raised dynamically by memory/head distance.
+// The upper bound protects against impractically tiny delay times.
+VIRTUAL_MIN_IPS = 0.001;
+VIRTUAL_MAX_IPS = 180.0;
+
+// Tap is interpreted as a tempo gesture in a practical BPM range.
+TAP_MIN_BPM = 40;
+TAP_MAX_BPM = 230;
+TAP_MIN_MS = 60000 / TAP_MAX_BPM; // fastest tap interval
+TAP_MAX_MS = 60000 / TAP_MIN_BPM; // slowest tap interval
+
+// Buffer sizing policy.
+// These are not timing clamps. They define a stable capacity target so
+// changing speed does not resize the circular tape while audio is running.
+MANUAL_LOOP_MAX_MS = 2000;
+SYNC_LOOP_BUFFER_MS = 2000;
+
+// Memory safety.
+// options:maxmem=64000000 requests a practical high-memory ceiling.
+// The actual tape allocation is derived from __memtop(), leaving room
+// for spring buffers and state. Active tape length is dynamic later.
+MEM_RESERVE_SLOTS = 4000000;
+TAPE_SLOT_CAP = 56000000;
+MIN_TAPE_SLOTS = 2048;
+
+memtop_slots = __memtop();
+memtop_slots <= 0 ? memtop_slots = 64000000;
+
+MAX_TAPE_SLOTS = min(TAPE_SLOT_CAP, max(1000000, memtop_slots - MEM_RESERVE_SLOTS));
+MAX_TAPE_SLOTS = floor(MAX_TAPE_SLOTS / 2) * 2; // stereo-pair alignment
+
+max_delay_sec = floor(MAX_TAPE_SLOTS / (srate * 2));
+max_delay_sec < 16 ? max_delay_sec = 16;
+
+tape_pos = 0;
+
+// ------------------------- GLOBAL STATES -------------------------
+
+sample_clock = 0;
+slider_ready = 0;
+
+// Tap and clear events come from @gfx buttons.
+tap_event = 0;
+tap_seen = 0;
+last_tap_sample = -1;
+tap_ms_tgt = 300;
+tap_ms_last = 300;
+
+clear_event = 0;
+clear_seen = 0;
+
+mouse_down_last = 0;
+
+// Timing / transport states.
+rate_pos_tgt = 0.5;
+rate_pos_s = 0.5;
+
+tape_speed_ips_req = 7.5;
+tape_speed_ips_tgt = 7.5;
+tape_speed_ips_s = 7.5;
+tape_speed_ips_mod = 7.5;
+
+speed_min_ips = IPS_RE201_MIN;
+speed_max_ips = IPS_RE201_MAX;
+
+active_min_ips = IPS_RE201_MIN;
+active_max_ips = IPS_RE201_MAX;
+min_speed_by_memory = VIRTUAL_MIN_IPS;
+farthest_active_head_in = HEAD1_IN_BASE;
+memory_limited = 0;
+
+lead_ms_req = 300;
+lead_ms_actual = 300;
+lead_head_in = HEAD1_IN_BASE;
+lead_head_name = 1;
+has_lead = 0;
+
+h1_dist_in = HEAD1_IN_BASE;
+h2_dist_in = HEAD1_IN_BASE * H2_RATIO_CAL;
+h3_dist_in = HEAD1_IN_BASE * H3_RATIO_CAL;
+
+h1_ms = 0;
+h2_ms = 0;
+h3_ms = 0;
+
+tape_length_in_tgt = 72;
+active_tape_sec = 8;
+active_tape_samples = floor(srate * active_tape_sec);
+active_tape_slots = active_tape_samples * 2;
+
+active_tape_sec_tgt = active_tape_sec;
+active_tape_samples_tgt = active_tape_samples;
+active_tape_slots_tgt = active_tape_slots;
+
+requested_loop_sec = 8;
+requested_loop_slots = active_tape_slots;
+
+buffer_loop_sec_tgt = active_tape_sec;
+buffer_loop_speed_ips = IPS_RE201_MIN;
+physical_loop_slots = active_tape_slots;
+
+loop_capped = 0;
+timing_clamped = 0;
+
+splice_phase = 0;
+splice_env = 0;
+splice_decay = exp(-1 / (srate * 0.020));
+
+// ------------------------- UTILITY -------------------------
+
+function Db2Lin(db)
+(
+  exp(db * ln10_over_20);
+);
+
+function OnePoleCoef(freq)
+(
+  freq = max(1, min(freq, srate * 0.45));
+  1 - exp(-2 * pi * freq / srate);
+);
+
+function Clamp(x lo hi)
+(
+  max(lo, min(x, hi));
+);
+
+function TapeSpeedFromRate(rate_pos min_ips max_ips) local(ratio)
+(
+  // Log interpolation feels more natural for tape-speed ratios.
+  rate_pos = Clamp(rate_pos, 0, 1);
+  min_ips = max(0.001, min_ips);
+  max_ips = max(min_ips + 0.001, max_ips);
+
+  ratio = max_ips / min_ips;
+
+  min_ips * exp(log(ratio) * rate_pos);
+);
+
+function RateFromTapeSpeed(speed_ips min_ips max_ips) local(ratio rate_pos)
+(
+  min_ips = max(0.001, min_ips);
+  max_ips = max(min_ips + 0.001, max_ips);
+  speed_ips = Clamp(speed_ips, min_ips, max_ips);
+
+  ratio = max_ips / min_ips;
+  rate_pos = log(speed_ips / min_ips) / log(ratio);
+
+  Clamp(rate_pos, 0, 1);
+);
+
+function HeadMsFromSpeed(head_in speed_ips)
+(
+  (head_in / max(0.001, speed_ips)) * 1000;
+);
+
+function SpeedFromHeadMs(head_in delay_ms)
+(
+  head_in / max(0.001, delay_ms / 1000);
+);
+
+function LoopSecFromTape(length_in speed_ips)
+(
+  length_in / max(0.001, speed_ips);
+);
+
+function SpeedNorm(speed_ips min_ips max_ips) local(ratio n)
+(
+  min_ips = max(0.001, min_ips);
+  max_ips = max(min_ips + 0.001, max_ips);
+  speed_ips = Clamp(speed_ips, min_ips, max_ips);
+
+  ratio = max_ips / min_ips;
+  n = log(speed_ips / min_ips) / log(ratio);
+
+  Clamp(n, 0, 1);
+);
+
+function TapeSat(x amt) local(d wet blend)
+(
+  // Compensated soft saturation.
+  amt = Clamp(amt, 0, 1);
+
+  d = 1 + (amt * 4.5);
+  wet = ((x * d) / (1 + abs(x * d))) / d;
+
+  blend = amt * 0.70;
+
+  (x * (1 - blend)) + (wet * blend);
+);
+
+function FinalSoftClip(x) local(ax over shaped)
+(
+  ax = abs(x);
+
+  ax <= 0.98 ? (
+    x;
+  ) : (
+    over = ax - 0.98;
+    shaped = 0.98 + (over / (1 + over * 8));
+    shaped = min(shaped, 1.0);
+
+    x < 0 ? -shaped : shaped;
+  );
+);
+
+function SpringSoftLimit(x)
+(
+  // Very conservative safety limiter inside the spring return.
+  // Prevents tank runaway from becoming a full-scale sine/noise blast.
+  (x * 1.6) / (1 + abs(x * 1.6));
+);
+
+function SyncFactorFromSlider(v)
+(
+  // Multipliers relative to quarter note.
+  // 2/1 = two whole notes = eight quarter notes.
+  v == 0 ? 8 :
+  v == 1 ? 4 :
+  v == 2 ? 2 :
+  v == 3 ? 1 :
+  v == 4 ? 0.6666666667 :
+  v == 5 ? 0.5 :
+  v == 6 ? 0.3333333333 :
+  v == 7 ? 0.25 :
+  v == 8 ? 0.1666666667 :
+           0.125;
+);
+
+// ------------------------- TAPE READER -------------------------
+
+function ReadTape(delay_samples) local(rpos idx frac nextidx addr addr2) instance(L R)
+(
+  delay_samples = Clamp(delay_samples, 2, active_tape_samples - 4);
+
+  rpos = tape_pos - (delay_samples * 2);
+
+  while (rpos < 0) (
+    rpos += active_tape_slots;
+  );
+
+  while (rpos >= active_tape_slots) (
+    rpos -= active_tape_slots;
+  );
+
+  idx = floor(rpos / 2) * 2;
+  frac = (rpos - idx) / 2;
+
+  nextidx = idx + 2;
+  nextidx >= active_tape_slots ? nextidx = 0;
+
+  addr = tape_base + idx;
+  addr2 = tape_base + nextidx;
+
+  L = addr[0] * (1 - frac) + addr2[0] * frac;
+  R = addr[1] * (1 - frac) + addr2[1] * frac;
+);
+
+// ------------------------- FILTERS -------------------------
+
+function BpfLikeProcess(x lpf_coef hpf_coef) local(y) instance(lp hp)
+(
+  lp += (x - lp) * lpf_coef;
+  hp += (lp - hp) * hpf_coef;
+
+  y = lp - hp;
+  y;
+);
+
+function EchoToneProcess(x) local(low high mid) instance(lo_state hi_lp_state)
+(
+  lo_state += (x - lo_state) * bass_coef;
+  hi_lp_state += (x - hi_lp_state) * treble_coef;
+
+  low = lo_state;
+  high = x - hi_lp_state;
+  mid = x - low - high;
+
+  mid + (low * bass_gain_s) + (high * treble_gain_s);
+);
+
+function ReverbToneProcess(x) local(low high mid) instance(lo_state hi_lp_state)
+(
+  lo_state += (x - lo_state) * rev_bass_coef;
+  hi_lp_state += (x - hi_lp_state) * rev_treble_coef;
+
+  low = lo_state;
+  high = x - hi_lp_state;
+  mid = x - low - high;
+
+  mid + (low * rev_bass_gain_s) + (high * rev_treble_gain_s);
+);
+
+function DCBlock(x) local(y) instance(x1 y1)
+(
+  y = x - x1 + (0.995 * y1);
+  x1 = x;
+  y1 = y;
+  y;
+);
+
+// ------------------------- SPRING REVERB -------------------------
+
+function CombInit(offset len_ms fb damp) instance(buf len pos filter feedback damping)
+(
+  buf = offset;
+  len = max(1, floor((len_ms / 1000) * srate));
+  pos = 0;
+  filter = 0;
+  feedback = fb;
+  damping = damp;
+
+  memset(buf, 0, len + 2);
+);
+
+function CombProcess(input) local(addr out) instance(buf len pos filter feedback damping)
+(
+  addr = buf + pos;
+
+  out = addr[0];
+
+  filter += (out - filter) * damping;
+  addr[0] = input + (filter * feedback);
+
+  pos += 1;
+  pos >= len ? pos = 0;
+
+  out;
+);
+
+function APInit(offset len_ms fb) instance(buf len pos feedback)
+(
+  buf = offset;
+  len = max(1, floor((len_ms / 1000) * srate));
+  pos = 0;
+  feedback = fb;
+
+  memset(buf, 0, len + 2);
+);
+
+function APProcess(input) local(addr bufout y) instance(buf len pos feedback)
+(
+  addr = buf + pos;
+
+  bufout = addr[0];
+  y = -input + bufout;
+
+  addr[0] = input + (bufout * feedback);
+
+  pos += 1;
+  pos >= len ? pos = 0;
+
+  y;
+);
+
+// Feed-forward micro-reflection delay for spring grain.
+// No feedback here: this adds granular coil texture without runaway risk.
+function SpringTapInit(offset len_ms) instance(buf len pos total_len)
+(
+  buf = offset;
+  len = max(1, floor((len_ms / 1000) * srate));
+  pos = 0;
+  memset(buf, 0, len + 8);
+  total_len = len + 8;
+);
+
+function SpringTapProcess(input) local(addr out) instance(buf len pos)
+(
+  addr = buf + pos;
+  out = addr[0];
+  addr[0] = input;
+
+  pos += 1;
+  pos >= len ? pos = 0;
+
+  out;
+);
+
+// ------------------------- MEMORY ALLOCATION -------------------------
+
+mem = 0;
+
+tape_base = mem;
+tape_samples = floor(srate * max_delay_sec);
+tape_slots = tape_samples * 2;
+
+mem += tape_slots + 16;
+
+memset(tape_base, 0, tape_slots + 16);
+
+// Spring tank: parallel comb network plus short diffusion.
+// Feedback values are moderate to avoid frozen ringing.
+c1L.CombInit(mem, 29.7, 0.62, 0.20); mem += c1L.len + 16;
+c2L.CombInit(mem, 37.1, 0.64, 0.18); mem += c2L.len + 16;
+c3L.CombInit(mem, 41.5, 0.66, 0.16); mem += c3L.len + 16;
+c4L.CombInit(mem, 53.9, 0.58, 0.14); mem += c4L.len + 16;
+
+c1R.CombInit(mem, 31.3, 0.62, 0.20); mem += c1R.len + 16;
+c2R.CombInit(mem, 39.7, 0.64, 0.18); mem += c2R.len + 16;
+c3R.CombInit(mem, 43.1, 0.66, 0.16); mem += c3R.len + 16;
+c4R.CombInit(mem, 59.5, 0.58, 0.14); mem += c4R.len + 16;
+
+ap1L.APInit(mem, 5.1, 0.45); mem += ap1L.len + 16;
+ap2L.APInit(mem, 1.7, 0.38); mem += ap2L.len + 16;
+
+ap1R.APInit(mem, 5.9, 0.45); mem += ap1R.len + 16;
+ap2R.APInit(mem, 1.3, 0.38); mem += ap2R.len + 16;
+
+// Feed-forward spring grain taps.
+// Short, uneven delays approximate small coil-by-coil reflections.
+gr1L.SpringTapInit(mem, 6.7);  mem += gr1L.total_len + 16;
+gr2L.SpringTapInit(mem, 10.9); mem += gr2L.total_len + 16;
+gr3L.SpringTapInit(mem, 15.7); mem += gr3L.total_len + 16;
+gr4L.SpringTapInit(mem, 22.3); mem += gr4L.total_len + 16;
+gr5L.SpringTapInit(mem, 31.1); mem += gr5L.total_len + 16;
+
+gr1R.SpringTapInit(mem, 7.3);  mem += gr1R.total_len + 16;
+gr2R.SpringTapInit(mem, 12.1); mem += gr2R.total_len + 16;
+gr3R.SpringTapInit(mem, 17.9); mem += gr3R.total_len + 16;
+gr4R.SpringTapInit(mem, 24.7); mem += gr4R.total_len + 16;
+gr5R.SpringTapInit(mem, 33.5); mem += gr5R.total_len + 16;
+
+// Modulation state.
+wow_phase = 0;
+flutter_phase = 0;
+flutter2_phase = 0;
+tape_lfo_phase = 0;
+
+irregular = 0;
+irregular_tgt = 0;
+random_lfo = 0;
+random_lfo_tgt = 0;
+
+noise_counter = 0;
+noise_period = max(1, floor(srate / 18));
+
+noise_lp_L = 0;
+noise_lp_R = 0;
+noise_hp_L = 0;
+noise_hp_R = 0;
+dropout_s = 1;
+
+spring_fast_env = 0;
+spring_slow_env = 0;
+spring_src_lp = 0;
+spring_drip_lp = 0;
+spring_alt_sign = 1;
+
+// Smoothed parameter states.
+input_gain_s = 1;
+master_gain_s = Db2Lin(-3);
+dry_gain_s = 1;
+echo_gain_s = 0.45;
+reverb_gain_s = 0.22;
+feedback_s = 0.30;
+
+bass_gain_s = 1;
+treble_gain_s = 1;
+
+rev_bass_gain_s = 1;
+rev_treble_gain_s = 1;
+
+spring_dwell_s = 0.55;
+spring_decay_s = 0.45;
+spring_drip_s = 0.20;
+spring_bounce_s = 0.35;
+spring_grain_s = 0.30;
+
+drive_s = 0.10;
+record_drive_s = 0.10;
+noise_gain_s = 0.001;
+
+tape_fb_loss_s = 0.89;
+condition_wow_mult_s = 1;
+wf_mult_s = 1;
+
+speed_wf_mult_s = 1;
+speed_noise_mult_s = 1;
+
+h1_gate = 0;
+h2_gate = 0;
+h3_gate = 0;
+echo_gate = 1;
+rev_gate = 0;
+
+// ------------------------- SLIDER UPDATE -------------------------
+
+
+function ParamUpdateDSP()
+(
+// Mode selector.
+mode = mode_sel + 1;
+
+h1_tgt = (mode == 1 || mode == 5 || mode == 8 || mode == 10 || mode == 11);
+h2_tgt = (mode == 2 || mode == 4 || mode == 6 || mode == 8 || mode == 9 || mode == 11);
+h3_tgt = (mode == 3 || mode == 4 || mode == 7 || mode == 9 || mode == 10 || mode == 11);
+
+echo_tgt = (mode <= 11);
+rev_tgt = (mode >= 5);
+
+// Physical head geometry.
+// H1 is derived from the fast service speed and the short H1 reference.
+// H2/H3 are proportional calibrations from the UAD/Galaxy-style timing
+// endpoints, with hidden trim sliders for fine tuning if needed.
+h1_dist_in = HEAD1_IN_BASE;
+h2_dist_in = h1_dist_in * H2_RATIO_CAL * h2_ratio_trim;
+h3_dist_in = h1_dist_in * H3_RATIO_CAL * h3_ratio_trim;
+
+// First active playback head = timing reference for ms/sync/tap.
+lead_head_in = h1_dist_in;
+lead_head_name = 1;
+has_lead = 0;
+
+h1_tgt ? (
+  lead_head_in = h1_dist_in;
+  lead_head_name = 1;
+  has_lead = 1;
+) : h2_tgt ? (
+  lead_head_in = h2_dist_in;
+  lead_head_name = 2;
+  has_lead = 1;
+) : h3_tgt ? (
+  lead_head_in = h3_dist_in;
+  lead_head_name = 3;
+  has_lead = 1;
+);
+
+// RE-201 Motor mode is fixed to the calibrated operational RE-201 range.
+// The wider service reference remains documented as IPS_SERVICE_MIN/MAX.
+// Manual ms / Sync / Tap use virtual exact speed later in @block.
+speed_min_ips = IPS_RE201_MIN;
+speed_max_ips = IPS_RE201_MAX;
+
+// Tape loop length in physical inches.
+// This does not change head spacing. It changes full-loop return time,
+// splice/dropout recurrence and available circular tape memory.
+tape_loop_size == 0 ? (
+  tape_length_in_tgt = 36;   // short loop
+  loop_dropout_mult_tgt = 1.50;
+) : tape_loop_size == 1 ? (
+  tape_length_in_tgt = 72;   // normal/reference loop
+  loop_dropout_mult_tgt = 1.00;
+) : (
+  tape_length_in_tgt = 120;  // long loop
+  loop_dropout_mult_tgt = 0.70;
+);
+
+// Routing / input.
+input_gain_tgt = Db2Lin(input_db);
+
+input_type == 2 ? (
+  // Mic high gain input: deliberately more sensitive.
+  input_gain_tgt *= Db2Lin(10);
+);
+
+output_sel == 0 ? output_trim_db = -6;
+output_sel == 1 ? output_trim_db = 0;
+output_sel == 2 ? output_trim_db = 6;
+
+master_gain_tgt = Db2Lin(master_db + output_trim_db);
+
+// From P.A. removes direct dry path.
+input_type == 1 ? (
+  dry_gain_tgt = 0;
+) : (
+  dry_gain_tgt = 1;
+);
+
+// Instrument Normal cancels effect only for Instrument input.
+inst_fx_allowed = !(input_type == 0 && inst_echo > 0.5);
+
+// Echo Cancel cancels echo and reverb, leaving dry through amp-like path.
+effect_allowed_tgt = (echo_cancel > 0.5) ? 0 : inst_fx_allowed;
+
+echo_gain_tgt = (echo_vol / 100) * effect_allowed_tgt;
+reverb_gain_tgt = (reverb_vol / 100) * effect_allowed_tgt;
+
+// Echo tone.
+bass_coef = OnePoleCoef(260);
+treble_coef = OnePoleCoef(4200);
+
+bass_gain_tgt = Db2Lin(bass_db);
+treble_gain_tgt = Db2Lin(treble_db);
+
+// Reverb tone controls are not on the original front panel.
+// They are added here as modern utility controls for the spring return.
+rev_bass_coef = OnePoleCoef(220);
+rev_treble_coef = OnePoleCoef(3600);
+
+rev_bass_gain_tgt = Db2Lin(rev_bass_db);
+rev_treble_gain_tgt = Db2Lin(rev_treble_db);
+
+// Condition.
+// 0 = aged unit baseline.
+// negative = more ideal.
+// positive = more degraded.
+cond = condition / 100;
+cond_pos = max(cond, 0);
+cond_neg = max(-cond, 0);
+
+// Tape formulation and age model.
+// Ampex 456: +6 high-output/high-bias behavior, warmer compression,
+// more vulnerable to old-tape drag/sticky-shed style degradation.
+// 3M 996: +9 super-high-output behavior, cleaner and higher headroom,
+// lower saturation at the same drive and better feedback sustain.
+tape_is_old = tape_age > 0.5;
+tape_is_996 = tape_formula > 0.5;
+
+tape_is_996 ? (
+  tape_headroom = 1.28;
+  tape_drive_mult = 0.72;
+  tape_noise_mult = 0.72;
+  tape_lpf_mult = 1.12;
+  tape_wf_mult = 0.88;
+  tape_sustain_bonus = 0.04;
+  tape_dropout_amt = tape_is_old ? 0.010 : 0.002;
+
+  tape_is_old ? (
+    age_lpf_mult = 0.82;
+    age_hpf_add = 35;
+    age_noise_mult = 1.40;
+    age_wf_mult = 1.20;
+    age_drive_add = 0.03;
+    age_sustain_penalty = -0.04;
+  ) : (
+    age_lpf_mult = 1.08;
+    age_hpf_add = -10;
+    age_noise_mult = 0.80;
+    age_wf_mult = 0.82;
+    age_drive_add = -0.02;
+    age_sustain_penalty = 0.02;
+  );
+) : (
+  tape_headroom = 0.92;
+  tape_drive_mult = 1.10;
+  tape_noise_mult = 1.00;
+  tape_lpf_mult = 0.98;
+  tape_wf_mult = 1.00;
+  tape_sustain_bonus = 0.00;
+  tape_dropout_amt = tape_is_old ? 0.030 : 0.004;
+
+  tape_is_old ? (
+    age_lpf_mult = 0.58;
+    age_hpf_add = 95;
+    age_noise_mult = 2.20;
+    age_wf_mult = 1.70;
+    age_drive_add = 0.10;
+    age_sustain_penalty = -0.11;
+  ) : (
+    age_lpf_mult = 1.00;
+    age_hpf_add = 0;
+    age_noise_mult = 0.95;
+    age_wf_mult = 0.95;
+    age_drive_add = 0.00;
+    age_sustain_penalty = 0.00;
+  );
+);
+
+tape_dropout_amt *= loop_dropout_mult_tgt;
+
+base_lpf = 9000 + (cond_neg * 7000) - (cond_pos * 5700);
+base_lpf *= tape_lpf_mult * age_lpf_mult;
+base_hpf = 70 - (cond_neg * 35) + (cond_pos * 80) + age_hpf_add;
+
+tape_fb_loss_tgt = 0.89 + (cond_neg * 0.05) - (cond_pos * 0.11) + tape_sustain_bonus + age_sustain_penalty;
+tape_fb_loss_tgt = Clamp(tape_fb_loss_tgt, 0.70, 0.96);
+
+// Feedback / Intensity.
+// Tape formula and age affect how much regeneration the machine can sustain.
+// 3M 996 + new tape can hold feedback longer;
+// old Ampex 456 decays and dirties up faster.
+fb_max_normal = 0.78 + tape_sustain_bonus + (tape_is_old ? -0.04 : 0.02);
+fb_max_normal = Clamp(fb_max_normal, 0.68, 0.92);
+
+intensity <= 100 ? (
+  feedback_tgt = (intensity / 100) * fb_max_normal;
+) : (
+  feedback_tgt = fb_max_normal + ((intensity - 100) / 10) * 0.09;
+);
+
+feedback_tgt = Clamp(feedback_tgt, 0, 1.04);
+
+condition_wow_mult_tgt = (1 - (cond_neg * 0.40) + (cond_pos * 0.45)) * tape_wf_mult * age_wf_mult;
+condition_noise_mult = (1 - (cond_neg * 0.55) + (cond_pos * 0.80)) * tape_noise_mult * age_noise_mult;
+condition_drive_bias = (cond_pos * 0.07) + age_drive_add;
+
+// W/F: positive = more discrepancy; negative = less.
+wf_mult_tgt = Clamp(1 + (wf_amt / 100), 0, 2);
+
+// Low Cut / High Cut on playback-head output.
+// Positive cuts more; negative cuts less.
+low_cut_norm = low_cut / 100;
+high_cut_norm = high_cut / 100;
+
+playback_hpf_freq_base = base_hpf;
+low_cut_norm >= 0 ? (
+  playback_hpf_freq_base += low_cut_norm * 380;
+) : (
+  playback_hpf_freq_base += low_cut_norm * 45;
+);
+
+playback_lpf_freq_base = base_lpf;
+high_cut_norm >= 0 ? (
+  playback_lpf_freq_base -= high_cut_norm * (base_lpf - 1800);
+) : (
+  playback_lpf_freq_base += (-high_cut_norm) * (17000 - base_lpf);
+);
+
+playback_hpf_freq_base = Clamp(playback_hpf_freq_base, 20, 1200);
+playback_lpf_freq_base = Clamp(playback_lpf_freq_base, 1200, 19000);
+
+// Head-specific tonal offsets.
+// More condition degradation = more mismatch.
+head_mismatch = cond_pos * 0.18;
+
+h1_gain_tgt = 0.86 - (head_mismatch * 0.20);
+h2_gain_tgt = 0.93 + (head_mismatch * 0.05);
+h3_gain_tgt = 1.00 - (head_mismatch * 0.10);
+
+// Drive / noise.
+drive_tgt = Clamp(((drive_amt / 100) * tape_drive_mult) + condition_drive_bias, 0, 1);
+record_drive_tgt = Clamp(((drive_amt / 100) * 0.80 * tape_drive_mult) + condition_drive_bias, 0, 1);
+
+// Noise is intentionally audible but not allowed to dominate feedback.
+noise_gain_tgt = (noise_amt / 100) * 0.018 * condition_noise_mult;
+
+noise_lpf_freq_base = 8500 - (cond_pos * 2500) + (cond_neg * 3500);
+noise_hpf_freq_base = 550 + (cond_pos * 250);
+
+// Spring tank input/pickup band limiting.
+// Conservative model: colored, bouncy and drippy, but protected against runaway.
+spring_lpf_coef = OnePoleCoef(5000);
+spring_hpf_coef = OnePoleCoef(130);
+
+// Safe mechanical spring controls.
+spring_dwell_tgt = 0.35 + ((spring_dwell / 100) * 1.05);
+spring_decay_tgt = spring_decay / 100;
+spring_drip_tgt = spring_drip / 100;
+spring_bounce_tgt = spring_bounce / 100;
+spring_grain_tgt = spring_grain / 100;
+
+// Drip detector: fast/slow envelope split on spring excitation.
+spring_fast_coef = OnePoleCoef(75);
+spring_slow_coef = OnePoleCoef(4.5);
+spring_src_lp_coef = OnePoleCoef(850);
+spring_drip_lp_coef = OnePoleCoef(2500);
+
+// Safe pickup coloration after the tank.
+// These are feed-forward/state-filter stages only: no extra regenerative feedback.
+spring_body_lpf_coef = OnePoleCoef(1350 + spring_bounce_tgt * 650);
+spring_body_hpf_coef = OnePoleCoef(170 + spring_dwell_tgt * 45);
+
+spring_metal_lpf_coef = OnePoleCoef(3600 + spring_drip_tgt * 1700);
+spring_metal_hpf_coef = OnePoleCoef(850 + spring_bounce_tgt * 450);
+
+spring_pickup_lpf_coef = OnePoleCoef(5400 - spring_decay_tgt * 650);
+spring_pickup_hpf_coef = OnePoleCoef(95 + spring_dwell_tgt * 18);
+
+// Runtime feedback coefficients for the existing stable comb tank.
+// Kept deliberately below runaway.
+spring_fb_base = 0.46 + (spring_decay_tgt * 0.22);
+spring_bounce_fb = 0.02 + (spring_bounce_tgt * 0.06);
+spring_damp_base = 0.16 + ((1 - spring_bounce_tgt) * 0.08);
+
+c1L.feedback = Clamp(spring_fb_base + spring_bounce_fb * 0.20, 0.38, 0.70);
+c2L.feedback = Clamp(spring_fb_base + spring_bounce_fb * 0.35, 0.38, 0.72);
+c3L.feedback = Clamp(spring_fb_base + spring_bounce_fb * 0.50, 0.38, 0.74);
+c4L.feedback = Clamp(spring_fb_base - spring_bounce_fb * 0.20, 0.35, 0.68);
+
+c1R.feedback = Clamp(spring_fb_base + spring_bounce_fb * 0.20, 0.38, 0.70);
+c2R.feedback = Clamp(spring_fb_base + spring_bounce_fb * 0.35, 0.38, 0.72);
+c3R.feedback = Clamp(spring_fb_base + spring_bounce_fb * 0.50, 0.38, 0.74);
+c4R.feedback = Clamp(spring_fb_base - spring_bounce_fb * 0.20, 0.35, 0.68);
+
+c1L.damping = Clamp(spring_damp_base, 0.10, 0.28);
+c2L.damping = Clamp(spring_damp_base * 0.92, 0.10, 0.28);
+c3L.damping = Clamp(spring_damp_base * 0.84, 0.10, 0.28);
+c4L.damping = Clamp(spring_damp_base * 1.10, 0.10, 0.30);
+
+c1R.damping = Clamp(spring_damp_base, 0.10, 0.28);
+c2R.damping = Clamp(spring_damp_base * 0.92, 0.10, 0.28);
+c3R.damping = Clamp(spring_damp_base * 0.84, 0.10, 0.28);
+c4R.damping = Clamp(spring_damp_base * 1.10, 0.10, 0.30);
+
+// Smoothing.
+param_coef = OnePoleCoef(20);
+switch_coef = OnePoleCoef(10);
+noise_coef = OnePoleCoef(5);
+dropout_coef = OnePoleCoef(18);
+random_lfo_coef = OnePoleCoef(max(0.2, lfo_rate));
+speed_color_coef = OnePoleCoef(12);
+
+// Motor torque.
+// Full counterclockwise = immediate response.
+motor_torque <= -99 ? (
+  motor_coef = 1;
+) : (
+  torque_norm = (motor_torque + 100) / 200; // 0 fast, 1 slow.
+  motor_hz = 0.08 + ((1 - torque_norm) * (1 - torque_norm) * 12);
+  motor_coef = OnePoleCoef(motor_hz);
+);
+
+slider_ready == 0 ? (
+  input_gain_s = input_gain_tgt;
+  master_gain_s = master_gain_tgt;
+  dry_gain_s = dry_gain_tgt;
+  echo_gain_s = echo_gain_tgt;
+  reverb_gain_s = reverb_gain_tgt;
+  feedback_s = feedback_tgt;
+
+  bass_gain_s = bass_gain_tgt;
+  treble_gain_s = treble_gain_tgt;
+
+  rev_bass_gain_s = rev_bass_gain_tgt;
+  rev_treble_gain_s = rev_treble_gain_tgt;
+
+  spring_dwell_s = spring_dwell_tgt;
+  spring_decay_s = spring_decay_tgt;
+  spring_drip_s = spring_drip_tgt;
+  spring_bounce_s = spring_bounce_tgt;
+  spring_grain_s = spring_grain_tgt;
+
+  drive_s = drive_tgt;
+  record_drive_s = record_drive_tgt;
+  noise_gain_s = noise_gain_tgt;
+
+  tape_fb_loss_s = tape_fb_loss_tgt;
+  condition_wow_mult_s = condition_wow_mult_tgt;
+  wf_mult_s = wf_mult_tgt;
+
+  h1_gate = h1_tgt * effect_allowed_tgt;
+  h2_gate = h2_tgt * effect_allowed_tgt;
+  h3_gate = h3_tgt * effect_allowed_tgt;
+  echo_gate = echo_tgt * effect_allowed_tgt;
+  rev_gate = rev_tgt * effect_allowed_tgt;
+
+  tape_speed_ips_s = TapeSpeedFromRate(repeat_rate / 100, speed_min_ips, speed_max_ips);
+  tape_speed_ips_tgt = tape_speed_ips_s;
+  tape_speed_ips_req = tape_speed_ips_s;
+  rate_pos_s = repeat_rate / 100;
+
+  slider_ready = 1;
+);
+
+// ------------------------- TIMING MODEL -------------------------
+);
+
+@slider
+
+ParamUpdateDSP();
+
+// UI visibility by timing mode.
+// JSFX slider ranges are static, so we hide irrelevant controls instead
+// of pretending the same slider changes meaning.
+// Use explicit bitmasks for reliable visibility updates:
+// slider 3 = 4, slider 4 = 8, slider 5 = 16, slider 6 = 32.
+slider_show(4,  time_mode == 0); // Repeat Rate
+slider_show(8,  time_mode == 1); // Manual ms
+slider_show(16, time_mode == 2); // Sync Division
+slider_show(32, 0);              // reserved/unused
+
+// Native controls visibility.
+// Graphic Skin mode hides native JSFX sliders so the custom panel is not pushed down.
+// Native Controls mode shows the operational sliders while keeping hidden calibration
+// and reserved controls invisible.
+ui_control_mode = ui_mode >= 0.5;
+
+idx_vis = 0;
+loop(41,
+  slider_show(2 ^ idx_vis, 0);
+  idx_vis += 1;
+);
+
+ui_control_mode ? (
+  // Basic/mode controls.
+  slider_show(1, 1);  // slider1 Mode Selector
+  slider_show(2, 1);  // slider2 Timing Mode
+  slider_show(4,  time_mode == 0); // slider3 Repeat Rate
+  slider_show(8,  time_mode == 1); // slider4 Manual ms
+  slider_show(16, time_mode == 2); // slider5 Sync Division
+  slider_show(32, 0);              // slider6 Reserved
+
+  // Main operational sliders 7-33.
+  idx_vis = 6;
+  loop(27,
+    slider_show(2 ^ idx_vis, 1);
+    idx_vis += 1;
+  );
+
+  // Hide calibration sliders 34-35.
+  slider_show(2 ^ 33, 0);
+  slider_show(2 ^ 34, 0);
+
+  // Spring controls 36-40.
+  idx_vis = 35;
+  loop(5,
+    slider_show(2 ^ idx_vis, 1);
+    idx_vis += 1;
+  );
+
+  // UI mode itself remains controlled from the custom panel.
+  slider_show(2 ^ 40, 0);
+);
+
+@block
+
+ParamUpdateDSP();
+
+
+timing_clamped = 0;
+memory_limited = 0;
+
+// Farthest active head determines the slowest usable virtual speed.
+// Reverb-only has no active playback head, so use H1 as a harmless reference.
+farthest_active_head_in = 0;
+h1_tgt ? farthest_active_head_in = max(farthest_active_head_in, h1_dist_in);
+h2_tgt ? farthest_active_head_in = max(farthest_active_head_in, h2_dist_in);
+h3_tgt ? farthest_active_head_in = max(farthest_active_head_in, h3_dist_in);
+farthest_active_head_in <= 0 ? farthest_active_head_in = h1_dist_in;
+
+// Reserve a small safety margin so interpolation never reads beyond memory.
+min_speed_by_memory = farthest_active_head_in / max(0.001, max_delay_sec - 0.25);
+
+// Resolve the selected musical timing source into a requested tape speed.
+// RE-201 Motor is physically bounded. Manual ms, Sync and Tap are virtual
+// exact transport modes, bounded only by memory/safety.
+time_mode == 0 ? (
+  // RE-201 Motor: calibrated operational range derived from proportional timing.
+  active_min_ips = IPS_RE201_MIN;
+  active_max_ips = IPS_RE201_MAX;
+
+  rate_pos_tgt = repeat_rate / 100;
+  tape_speed_ips_req = TapeSpeedFromRate(rate_pos_tgt, active_min_ips, active_max_ips);
+
+  has_lead ? (
+    lead_ms_req = HeadMsFromSpeed(lead_head_in, tape_speed_ips_req);
+  ) : (
+    lead_ms_req = 0;
+  );
+
+) : (
+  // Virtual exact modes: allow the calculated speed needed by the requested time.
+  // The lower bound is raised by memory so the farthest active head can still be read.
+  active_min_ips = max(VIRTUAL_MIN_IPS, min_speed_by_memory);
+  active_max_ips = VIRTUAL_MAX_IPS;
+
+  time_mode == 1 ? (
+    lead_ms_req = manual_ms;
+
+  ) : time_mode == 2 ? (
+    // This must run in @block, because REAPER tempo can change over time.
+    quarter_ms = (60000 / max(20, tempo));
+    lead_ms_req = quarter_ms * SyncFactorFromSlider(sync_div);
+
+  ) : (
+    lead_ms_req = tap_ms_tgt;
+  );
+
+  has_lead ? (
+    tape_speed_ips_req = SpeedFromHeadMs(lead_head_in, lead_ms_req);
+  ) : (
+    // Reverb-only: timing is not audible, but keep a sane physical reference.
+    tape_speed_ips_req = TapeSpeedFromRate(repeat_rate / 100, IPS_RE201_MIN, IPS_RE201_MAX);
+  );
+);
+
+// Clamp to the active transport range.
+tape_speed_ips_tgt = Clamp(tape_speed_ips_req, active_min_ips, active_max_ips);
+timing_clamped = abs(tape_speed_ips_req - tape_speed_ips_tgt) > 0.0001;
+memory_limited = time_mode > 0 && tape_speed_ips_req < active_min_ips;
+
+rate_pos_tgt = RateFromTapeSpeed(Clamp(tape_speed_ips_tgt, speed_min_ips, speed_max_ips), speed_min_ips, speed_max_ips);
+
+// Actual leading time after range/memory clamp, before motor inertia.
+has_lead ? (
+  lead_ms_actual_tgt = HeadMsFromSpeed(lead_head_in, tape_speed_ips_tgt);
+) : (
+  lead_ms_actual_tgt = 0;
+);
+
+// Stable active tape capacity.
+// The physical loop readout/splice follows current speed, but the circular
+// buffer size does NOT track every speed change. This preserves the smooth
+// pitch-bend behavior of tape speed changes and avoids chopped audio.
+requested_loop_sec = LoopSecFromTape(tape_length_in_tgt, tape_speed_ips_s);
+physical_loop_slots = floor(requested_loop_sec * srate * 2);
+
+// Capacity target is based on a stable slow-speed reference per mode,
+// not on the instantaneous motor speed.
+time_mode == 0 ? (
+  // RE-201 Motor: allocate for the slowest calibrated motor speed.
+  buffer_loop_speed_ips = IPS_RE201_MIN;
+
+) : time_mode == 1 ? (
+  // Manual ms: allocate for the maximum manual range, not the current value.
+  buffer_loop_speed_ips = has_lead ? SpeedFromHeadMs(lead_head_in, MANUAL_LOOP_MAX_MS) : IPS_RE201_MIN;
+
+) : time_mode == 2 ? (
+  // Tempo Sync: use a stable practical buffer target. Longer sync values can
+  // still sound; the full physical tape loop may be capped by maxmem.
+  buffer_loop_speed_ips = has_lead ? SpeedFromHeadMs(lead_head_in, SYNC_LOOP_BUFFER_MS) : IPS_RE201_MIN;
+
+) : (
+  // Tap Tempo: allocate for the slowest accepted tap interval.
+  buffer_loop_speed_ips = has_lead ? SpeedFromHeadMs(lead_head_in, TAP_MAX_MS) : IPS_RE201_MIN;
+);
+
+buffer_loop_speed_ips = max(0.001, buffer_loop_speed_ips);
+buffer_loop_sec_tgt = LoopSecFromTape(tape_length_in_tgt, buffer_loop_speed_ips);
+requested_loop_slots = floor(buffer_loop_sec_tgt * srate * 2);
+
+active_tape_slots_tgt = min(requested_loop_slots, MAX_TAPE_SLOTS);
+active_tape_slots_tgt = max(MIN_TAPE_SLOTS, active_tape_slots_tgt);
+active_tape_slots_tgt = floor(active_tape_slots_tgt / 2) * 2;
+
+active_tape_samples_tgt = active_tape_slots_tgt / 2;
+active_tape_sec_tgt = active_tape_samples_tgt / srate;
+
+// Report whether the current physical tape loop would exceed available memory.
+loop_capped = physical_loop_slots > MAX_TAPE_SLOTS ? 1 : 0;
+
+// Speed-dependent color coefficients are recalculated per block.
+tone_speed_ips = Clamp(tape_speed_ips_s, 1.875, IPS_RE201_MAX);
+speed_norm_for_color = SpeedNorm(tone_speed_ips, 1.875, IPS_RE201_MAX);
+
+// Slower speeds sound noisier, darker and less stable.
+// Faster speeds are brighter and tighter.
+speed_wf_mult_tgt = 1.30 - (speed_norm_for_color * 0.35);
+speed_noise_mult_tgt = 1.35 - (speed_norm_for_color * 0.35);
+speed_lpf_mult = 0.70 + (speed_norm_for_color * 0.45);
+
+playback_lpf_freq = Clamp(playback_lpf_freq_base * speed_lpf_mult, 900, 19000);
+playback_hpf_freq = playback_hpf_freq_base;
+
+playback_hpf_coef = OnePoleCoef(playback_hpf_freq);
+playback_lpf_coef = OnePoleCoef(playback_lpf_freq);
+
+h1_lpf_coef = OnePoleCoef(playback_lpf_freq * (1.05 - head_mismatch * 0.20));
+h2_lpf_coef = OnePoleCoef(playback_lpf_freq * (0.98 - head_mismatch * 0.10));
+h3_lpf_coef = OnePoleCoef(playback_lpf_freq * (0.92 - head_mismatch * 0.20));
+
+h1_hpf_coef = playback_hpf_coef;
+h2_hpf_coef = playback_hpf_coef;
+h3_hpf_coef = playback_hpf_coef;
+
+// Feedback filter: repeats lose bandwidth per pass.
+feedback_lpf_coef = OnePoleCoef(Clamp(playback_lpf_freq * 0.85, 1000, 17000));
+feedback_hpf_coef = OnePoleCoef(Clamp(playback_hpf_freq * 1.15, 20, 1500));
+
+noise_lpf_coef = OnePoleCoef(Clamp(noise_lpf_freq_base * speed_lpf_mult, 1200, 18000));
+noise_hpf_coef = OnePoleCoef(noise_hpf_freq_base);
+
+// ------------------------- AUDIO PROCESS -------------------------
+
+@sample
+
+sample_clock += 1;
+
+// --- Handle @gfx events safely in the audio thread ---
+
+tap_event != tap_seen ? (
+  last_tap_sample >= 0 ? (
+    tap_elapsed = sample_clock - last_tap_sample;
+    tap_elapsed_ms = (tap_elapsed * 1000) / srate;
+
+    tap_elapsed_ms >= TAP_MIN_MS && tap_elapsed_ms <= TAP_MAX_MS ? (
+      tap_ms_last = tap_ms_tgt;
+      tap_ms_tgt = (tap_ms_tgt * 0.35) + (tap_elapsed_ms * 0.65);
+    );
+  );
+
+  last_tap_sample = sample_clock;
+  tap_seen = tap_event;
+);
+
+clear_event != clear_seen ? (
+  memset(tape_base, 0, tape_slots + 16);
+  tape_pos = 0;
+
+  // Reset filter states that can hold echoes/noise.
+  h1FL.lp = 0; h1FL.hp = 0;
+  h1FR.lp = 0; h1FR.hp = 0;
+  h2FL.lp = 0; h2FL.hp = 0;
+  h2FR.lp = 0; h2FR.hp = 0;
+  h3FL.lp = 0; h3FL.hp = 0;
+  h3FR.lp = 0; h3FR.hp = 0;
+
+  fbFL.lp = 0; fbFL.hp = 0;
+  fbFR.lp = 0; fbFR.hp = 0;
+
+  noise_lp_L = 0; noise_lp_R = 0;
+  noise_hp_L = 0; noise_hp_R = 0;
+  dropout_s = 1;
+  splice_env = 0;
+  splice_phase = 0;
+
+  clear_seen = clear_event;
+);
+
+// --- Smooth parameters ---
+
+input_gain_s += (input_gain_tgt - input_gain_s) * param_coef;
+master_gain_s += (master_gain_tgt - master_gain_s) * param_coef;
+dry_gain_s += (dry_gain_tgt - dry_gain_s) * param_coef;
+echo_gain_s += (echo_gain_tgt - echo_gain_s) * param_coef;
+reverb_gain_s += (reverb_gain_tgt - reverb_gain_s) * param_coef;
+feedback_s += (feedback_tgt - feedback_s) * param_coef;
+
+bass_gain_s += (bass_gain_tgt - bass_gain_s) * param_coef;
+treble_gain_s += (treble_gain_tgt - treble_gain_s) * param_coef;
+
+rev_bass_gain_s += (rev_bass_gain_tgt - rev_bass_gain_s) * param_coef;
+rev_treble_gain_s += (rev_treble_gain_tgt - rev_treble_gain_s) * param_coef;
+
+spring_dwell_s += (spring_dwell_tgt - spring_dwell_s) * param_coef;
+spring_decay_s += (spring_decay_tgt - spring_decay_s) * param_coef;
+spring_drip_s += (spring_drip_tgt - spring_drip_s) * param_coef;
+spring_bounce_s += (spring_bounce_tgt - spring_bounce_s) * param_coef;
+spring_grain_s += (spring_grain_tgt - spring_grain_s) * param_coef;
+
+drive_s += (drive_tgt - drive_s) * param_coef;
+record_drive_s += (record_drive_tgt - record_drive_s) * param_coef;
+noise_gain_s += (noise_gain_tgt - noise_gain_s) * param_coef;
+
+tape_fb_loss_s += (tape_fb_loss_tgt - tape_fb_loss_s) * param_coef;
+condition_wow_mult_s += (condition_wow_mult_tgt - condition_wow_mult_s) * param_coef;
+wf_mult_s += (wf_mult_tgt - wf_mult_s) * param_coef;
+
+speed_wf_mult_s += (speed_wf_mult_tgt - speed_wf_mult_s) * speed_color_coef;
+speed_noise_mult_s += (speed_noise_mult_tgt - speed_noise_mult_s) * speed_color_coef;
+
+// --- Motor / transport state ---
+
+// The only smoothed timing state is tape speed.
+// H1/H2/H3 are derived from this single transport speed.
+tape_speed_ips_s += (tape_speed_ips_tgt - tape_speed_ips_s) * motor_coef;
+rate_pos_s = RateFromTapeSpeed(tape_speed_ips_s, speed_min_ips, speed_max_ips);
+
+// Apply stable active tape capacity.
+// Because active_tape_slots_tgt is not tied to instantaneous speed,
+// this should only move on structural changes such as tape length,
+// timing mode, head mode or sample rate.
+abs(active_tape_slots_tgt - active_tape_slots) > (srate * 2) ? (
+  old_slots = max(2, active_tape_slots);
+  phase = tape_pos / old_slots;
+
+  active_tape_slots = active_tape_slots_tgt;
+  active_tape_samples = active_tape_samples_tgt;
+  active_tape_sec = active_tape_sec_tgt;
+
+  tape_pos = floor((phase * active_tape_slots) / 2) * 2;
+  tape_pos >= active_tape_slots ? tape_pos = 0;
+) : (
+  active_tape_sec = active_tape_samples / srate;
+);
+
+tape_pos >= active_tape_slots ? tape_pos = 0;
+
+// Mode gates.
+h1_gate += ((h1_tgt * effect_allowed_tgt) - h1_gate) * switch_coef;
+h2_gate += ((h2_tgt * effect_allowed_tgt) - h2_gate) * switch_coef;
+h3_gate += ((h3_tgt * effect_allowed_tgt) - h3_gate) * switch_coef;
+echo_gate += ((echo_tgt * effect_allowed_tgt) - echo_gate) * switch_coef;
+rev_gate += ((rev_tgt * effect_allowed_tgt) - rev_gate) * switch_coef;
+
+// --- Input amp ---
+
+inL = spl0;
+inR = spl1;
+
+preL = TapeSat((inL * input_gain_s) / tape_headroom, drive_s * 0.40) * tape_headroom;
+preR = TapeSat((inR * input_gain_s) / tape_headroom, drive_s * 0.40) * tape_headroom;
+
+// Single mode: tape path is mono/original-like.
+// Direct dry remains stereo for insert usability.
+stereo_mode < 0.5 ? (
+  tapeInL = (preL + preR) * 0.5;
+  tapeInR = tapeInL;
+) : (
+  tapeInL = preL;
+  tapeInR = preR;
+);
+
+// --- Wow, flutter and tape speed LFO as speed modulation ---
+
+wow_phase += (0.38 * 2 * pi) / srate;
+wow_phase > 2 * pi ? wow_phase -= 2 * pi;
+
+flutter_phase += (6.7 * 2 * pi) / srate;
+flutter_phase > 2 * pi ? flutter_phase -= 2 * pi;
+
+flutter2_phase += (11.3 * 2 * pi) / srate;
+flutter2_phase > 2 * pi ? flutter2_phase -= 2 * pi;
+
+noise_counter += 1;
+noise_counter >= noise_period ? (
+  noise_counter = 0;
+  irregular_tgt = rand(2) - 1;
+  random_lfo_tgt = rand(2) - 1;
+);
+
+irregular += (irregular_tgt - irregular) * noise_coef;
+random_lfo += (random_lfo_tgt - random_lfo) * random_lfo_coef;
+
+// Tape Speed LFO.
+tape_lfo_phase += (lfo_rate * 2 * pi) / srate;
+tape_lfo_phase > 2 * pi ? tape_lfo_phase -= 2 * pi;
+
+lfo_wave == 0 ? (
+  lfo_value = sin(tape_lfo_phase);
+) : lfo_wave == 1 ? (
+  ph = tape_lfo_phase / (2 * pi);
+  lfo_value = 4 * abs(ph - 0.5) - 1;
+) : lfo_wave == 2 ? (
+  ph = tape_lfo_phase / (2 * pi);
+  lfo_value = (2 * ph) - 1;
+) : lfo_wave == 3 ? (
+  sin(tape_lfo_phase) >= 0 ? lfo_value = 1 : lfo_value = -1;
+) : (
+  lfo_value = random_lfo;
+);
+
+// W/F and LFO modulate tape speed, not independent delay samples.
+// This preserves one-motor / one-tape behavior.
+wf_signal =
+  (sin(wow_phase) * 0.75)
+  + (sin(flutter_phase) * 0.18)
+  + (sin(flutter2_phase) * 0.06)
+  + (irregular * 0.14);
+
+wf_ratio = wf_signal * (0.0025 * wf_mult_s * condition_wow_mult_s * speed_wf_mult_s);
+lfo_ratio = lfo_value * (lfo_depth / 100) * 0.080;
+
+speed_mod_ratio = Clamp(1 + wf_ratio + lfo_ratio, 0.65, 1.35);
+tape_speed_ips_mod = tape_speed_ips_s * speed_mod_ratio;
+
+// --- Head times derived from physical geometry ---
+
+h1_ms = HeadMsFromSpeed(h1_dist_in, tape_speed_ips_mod);
+h2_ms = HeadMsFromSpeed(h2_dist_in, tape_speed_ips_mod);
+h3_ms = HeadMsFromSpeed(h3_dist_in, tape_speed_ips_mod);
+
+has_lead ? (
+  lead_ms_actual = HeadMsFromSpeed(lead_head_in, tape_speed_ips_s);
+) : (
+  lead_ms_actual = 0;
+);
+
+h1_delay = (h1_ms / 1000) * srate;
+h2_delay = (h2_ms / 1000) * srate;
+h3_delay = (h3_ms / 1000) * srate;
+
+// --- Read playback heads ---
+
+head1.ReadTape(h1_delay);
+head2.ReadTape(h2_delay);
+head3.ReadTape(h3_delay);
+
+// Head-specific filtering and level.
+h1L = h1FL.BpfLikeProcess(head1.L * h1_gain_tgt, h1_lpf_coef, h1_hpf_coef);
+h1R = h1FR.BpfLikeProcess(head1.R * h1_gain_tgt, h1_lpf_coef, h1_hpf_coef);
+
+h2L = h2FL.BpfLikeProcess(head2.L * h2_gain_tgt, h2_lpf_coef, h2_hpf_coef);
+h2R = h2FR.BpfLikeProcess(head2.R * h2_gain_tgt, h2_lpf_coef, h2_hpf_coef);
+
+h3L = h3FL.BpfLikeProcess(head3.L * h3_gain_tgt, h3_lpf_coef, h3_hpf_coef);
+h3R = h3FR.BpfLikeProcess(head3.R * h3_gain_tgt, h3_lpf_coef, h3_hpf_coef);
+
+// Splice/loop behavior.
+// A shorter physical loop makes splice recurrence more frequent.
+splice_phase += 1 / max(1, requested_loop_sec * srate);
+splice_phase >= 1 ? (
+  splice_phase -= 1;
+  splice_env = 1;
+);
+
+splice_env *= splice_decay;
+
+// Old tape / oxide instability: subtle level loss events on playback.
+// Probability is tied to speed and tape length, not to feedback gain.
+dropout_prob = 0.00020 * loop_dropout_mult_tgt * (tape_speed_ips_s / 7.5);
+dropout_tgt = 1 - (tape_dropout_amt * (rand(1) < dropout_prob ? 1 : 0));
+dropout_s += (dropout_tgt - dropout_s) * dropout_coef;
+dropout_s <= 0 ? dropout_s = 1;
+
+// Splice event is a very small thump/drop. It is deliberately conservative.
+splice_drop = 1 - (splice_env * tape_dropout_amt * 0.75);
+
+h1L *= dropout_s * splice_drop; h1R *= dropout_s * splice_drop;
+h2L *= dropout_s * splice_drop; h2R *= dropout_s * splice_drop;
+h3L *= dropout_s * splice_drop; h3R *= dropout_s * splice_drop;
+
+// --- Mode selector head mix ---
+
+echo_heads_L = 0;
+echo_heads_R = 0;
+
+echo_heads_L += h1L * h1_gate;
+echo_heads_R += h1R * h1_gate;
+
+echo_heads_L += h2L * h2_gate;
+echo_heads_R += h2R * h2_gate;
+
+echo_heads_L += h3L * h3_gate;
+echo_heads_R += h3R * h3_gate;
+
+head_sum = h1_gate + h2_gate + h3_gate;
+
+head_sum > 1 ? (
+  head_scale = 1 / head_sum;
+) : (
+  head_scale = 1;
+);
+
+echo_heads_L *= head_scale * echo_gate;
+echo_heads_R *= head_scale * echo_gate;
+
+// Playback saturation and echo tone.
+// Bass/Treble affects echo only.
+echo_sat_L = TapeSat(echo_heads_L / tape_headroom, drive_s) * tape_headroom;
+echo_sat_R = TapeSat(echo_heads_R / tape_headroom, drive_s) * tape_headroom;
+
+echo_tone_clean_L = echoToneL.EchoToneProcess(echo_sat_L);
+echo_tone_clean_R = echoToneR.EchoToneProcess(echo_sat_R);
+
+// Tape hiss: generated after playback saturation so it stays audible,
+// but not sent fully into the feedback path.
+whiteL = rand(2) - 1;
+whiteR = rand(2) - 1;
+
+noise_lp_L += (whiteL - noise_lp_L) * noise_lpf_coef;
+noise_lp_R += (whiteR - noise_lp_R) * noise_lpf_coef;
+
+noise_hp_L += (noise_lp_L - noise_hp_L) * noise_hpf_coef;
+noise_hp_R += (noise_lp_R - noise_hp_R) * noise_hpf_coef;
+
+tape_noise_L = (noise_lp_L - noise_hp_L) * noise_gain_s * speed_noise_mult_s * echo_gate;
+tape_noise_R = (noise_lp_R - noise_hp_R) * noise_gain_s * speed_noise_mult_s * echo_gate;
+
+echo_out_L = echo_tone_clean_L + tape_noise_L;
+echo_out_R = echo_tone_clean_R + tape_noise_R;
+
+// --- Feedback to record head ---
+
+// Reverb never feeds the tape.
+// Feedback gets extra bandwidth loss to make repeats decay naturally.
+fb_clean_L = fbFL.BpfLikeProcess(echo_tone_clean_L, feedback_lpf_coef, feedback_hpf_coef);
+fb_clean_R = fbFR.BpfLikeProcess(echo_tone_clean_R, feedback_lpf_coef, feedback_hpf_coef);
+
+fbL = fb_clean_L * feedback_s * tape_fb_loss_s;
+fbR = fb_clean_R * feedback_s * tape_fb_loss_s;
+
+// --- Spring reverb branch ---
+
+// Spring receives input plus a portion of the echo. It is parallel to tape feedback.
+// Safe tank model: keep the stable comb/AP topology, but add controlled dwell,
+// drip and bounce around it.
+stereo_mode < 0.5 ? (
+  spring_src = ((tapeInL + tapeInR) * 0.5) + (((echo_tone_clean_L + echo_tone_clean_R) * 0.5) * 0.50);
+  spring_raw_L = spring_src;
+  spring_raw_R = spring_src;
+) : (
+  spring_raw_L = tapeInL + (echo_tone_clean_L * 0.50);
+  spring_raw_R = tapeInR + (echo_tone_clean_R * 0.50);
+);
+
+spring_return_gate = rev_gate * effect_allowed_tgt;
+
+// Input transducer / dwell stage.
+spring_drive_L = TapeSat(spring_raw_L * 0.34 * spring_dwell_s * rev_gate, drive_s * 0.10);
+spring_drive_R = TapeSat(spring_raw_R * 0.34 * spring_dwell_s * rev_gate, drive_s * 0.10);
+
+spring_in_L = springInL.BpfLikeProcess(spring_drive_L, spring_lpf_coef, spring_hpf_coef);
+spring_in_R = springInR.BpfLikeProcess(spring_drive_R, spring_lpf_coef, spring_hpf_coef);
+
+// Drip detector: fast envelope minus slow envelope.
+// It injects a small, band-limited, alternating excitation into the tank.
+spring_mono = (spring_in_L + spring_in_R) * 0.5;
+spring_abs = abs(spring_mono);
+
+spring_fast_env += (spring_abs - spring_fast_env) * spring_fast_coef;
+spring_slow_env += (spring_abs - spring_slow_env) * spring_slow_coef;
+
+spring_src_lp += (spring_mono - spring_src_lp) * spring_src_lp_coef;
+spring_hp = spring_mono - spring_src_lp;
+
+spring_alt_sign = -spring_alt_sign;
+drip_env = max(0, spring_fast_env - spring_slow_env);
+drip_raw = (spring_hp * 0.55) + (spring_alt_sign * drip_env * 0.18);
+spring_drip_lp += (drip_raw - spring_drip_lp) * spring_drip_lp_coef;
+
+drip_exc = SpringSoftLimit(spring_drip_lp * spring_drip_s * 0.88);
+
+spring_tank_L = spring_in_L + drip_exc;
+spring_tank_R = spring_in_R - (drip_exc * 0.75);
+
+// Stable spring tank process.
+// Bounce changes the matrix-like weighting, not internal feedback beyond safe limits.
+spring_bounce_mix = spring_bounce_s;
+
+spring_L1 = c1L.CombProcess(spring_tank_L + spring_tank_R * 0.05);
+spring_L2 = c2L.CombProcess(spring_tank_L * 0.90 - spring_tank_R * 0.08);
+spring_L3 = c3L.CombProcess(spring_tank_L * 0.70 + spring_mono * 0.18);
+spring_L4 = c4L.CombProcess(spring_tank_L * 0.45 - spring_mono * 0.14);
+
+spring_R1 = c1R.CombProcess(spring_tank_R + spring_tank_L * 0.05);
+spring_R2 = c2R.CombProcess(spring_tank_R * 0.90 - spring_tank_L * 0.08);
+spring_R3 = c3R.CombProcess(spring_tank_R * 0.70 + spring_mono * 0.18);
+spring_R4 = c4R.CombProcess(spring_tank_R * 0.45 - spring_mono * 0.14);
+
+spring_out_L =
+  (spring_L1 * (0.30 - spring_bounce_mix * 0.06))
+  + (spring_L2 * (0.27 + spring_bounce_mix * 0.07))
+  - (spring_L3 * (0.16 + spring_bounce_mix * 0.05))
+  + (spring_L4 * (0.17 + spring_bounce_mix * 0.04));
+
+spring_out_R =
+  (spring_R1 * (0.30 - spring_bounce_mix * 0.06))
+  - (spring_R2 * (0.18 + spring_bounce_mix * 0.06))
+  + (spring_R3 * (0.23 + spring_bounce_mix * 0.05))
+  + (spring_R4 * (0.17 + spring_bounce_mix * 0.04));
+
+spring_out_L = SpringSoftLimit(spring_out_L * 0.72);
+spring_out_R = SpringSoftLimit(spring_out_R * 0.72);
+
+spring_out_L = ap1L.APProcess(spring_out_L);
+spring_out_L = ap2L.APProcess(spring_out_L);
+
+spring_out_R = ap1R.APProcess(spring_out_R);
+spring_out_R = ap2R.APProcess(spring_out_R);
+
+// Feed-forward granular coil texture.
+// Uneven micro-reflections add small-scale spring detail without changing
+// the internal feedback stability of the tank.
+grain_src_L = SpringSoftLimit(spring_out_L + drip_exc * 0.18);
+grain_src_R = SpringSoftLimit(spring_out_R - drip_exc * 0.14);
+
+grain_L =
+  (gr1L.SpringTapProcess(grain_src_L) * 0.30)
+  - (gr2L.SpringTapProcess(grain_src_L) * 0.22)
+  + (gr3L.SpringTapProcess(grain_src_L) * 0.17)
+  - (gr4L.SpringTapProcess(grain_src_L) * 0.12)
+  + (gr5L.SpringTapProcess(grain_src_L) * 0.08);
+
+grain_R =
+  (gr1R.SpringTapProcess(grain_src_R) * 0.30)
+  - (gr2R.SpringTapProcess(grain_src_R) * 0.22)
+  + (gr3R.SpringTapProcess(grain_src_R) * 0.17)
+  - (gr4R.SpringTapProcess(grain_src_R) * 0.12)
+  + (gr5R.SpringTapProcess(grain_src_R) * 0.08);
+
+spring_out_L = SpringSoftLimit(spring_out_L + grain_L * spring_grain_s * 0.36);
+spring_out_R = SpringSoftLimit(spring_out_R + grain_R * spring_grain_s * 0.36);
+
+// Pickup/body coloration.
+// This makes the spring feel less like a neutral room and more like a small
+// electromechanical tank: low-mid body plus a controlled metallic band.
+spring_body_L = springBodyL.BpfLikeProcess(spring_out_L, spring_body_lpf_coef, spring_body_hpf_coef);
+spring_body_R = springBodyR.BpfLikeProcess(spring_out_R, spring_body_lpf_coef, spring_body_hpf_coef);
+
+spring_metal_L = springMetalL.BpfLikeProcess(spring_out_L, spring_metal_lpf_coef, spring_metal_hpf_coef);
+spring_metal_R = springMetalR.BpfLikeProcess(spring_out_R, spring_metal_lpf_coef, spring_metal_hpf_coef);
+
+spring_pick_L =
+  (spring_out_L * 0.76)
+  + (spring_body_L * (0.16 + spring_bounce_s * 0.08))
+  + (spring_metal_L * (spring_drip_s * 0.12));
+
+spring_pick_R =
+  (spring_out_R * 0.76)
+  + (spring_body_R * (0.16 + spring_bounce_s * 0.08))
+  + (spring_metal_R * (spring_drip_s * 0.12));
+
+spring_out_L = springPickupL.BpfLikeProcess(SpringSoftLimit(spring_pick_L * 1.12), spring_pickup_lpf_coef, spring_pickup_hpf_coef);
+spring_out_R = springPickupR.BpfLikeProcess(SpringSoftLimit(spring_pick_R * 1.12), spring_pickup_lpf_coef, spring_pickup_hpf_coef);
+
+// Added spring return EQ.
+// This is a practical extension: the original controls do not provide
+// independent bass/treble for the reverb branch.
+spring_out_L = springToneL.ReverbToneProcess(spring_out_L);
+spring_out_R = springToneR.ReverbToneProcess(spring_out_R);
+
+// Pickup/output stage: final limiter before returning to the mix.
+spring_out_L = SpringSoftLimit(TapeSat(spring_out_L, drive_s * 0.14 + spring_dwell_s * 0.015)) * spring_return_gate;
+spring_out_R = SpringSoftLimit(TapeSat(spring_out_R, drive_s * 0.14 + spring_dwell_s * 0.015)) * spring_return_gate;
+
+// --- Record to tape ---
+
+// If echo is canceled or mode is Reverb Only, record zero over time.
+// This behaves like an implicit erase/write pass through the tape.
+record_enable = echo_gate;
+
+record_L = TapeSat(((tapeInL * record_enable) + fbL) / tape_headroom, record_drive_s) * tape_headroom;
+record_R = TapeSat(((tapeInR * record_enable) + fbR) / tape_headroom, record_drive_s) * tape_headroom;
+
+stereo_mode < 0.5 ? (
+  record_mono = (record_L + record_R) * 0.5;
+  record_L = record_mono;
+  record_R = record_mono;
+);
+
+write_addr = tape_base + tape_pos;
+
+write_addr[0] = record_L;
+write_addr[1] = record_R;
+
+tape_pos += 2;
+tape_pos >= active_tape_slots ? tape_pos = 0;
+
+// --- Output mix ---
+
+outL =
+  (preL * dry_gain_s)
+  + (echo_out_L * echo_gain_s)
+  + (spring_out_L * reverb_gain_s);
+
+outR =
+  (preR * dry_gain_s)
+  + (echo_out_R * echo_gain_s)
+  + (spring_out_R * reverb_gain_s);
+
+outL = dcL.DCBlock(outL);
+outR = dcR.DCBlock(outR);
+
+outL *= master_gain_s;
+outR *= master_gain_s;
+
+spl0 = FinalSoftClip(outL);
+spl1 = FinalSoftClip(outR);
+
+// ------------------------- CUSTOM BUTTONS / DISPLAY -------------------------
+
+@gfx 1920 1080
+
+function ui_clip01(x)
+(
+  x < 0 ? 0 : x > 1 ? 1 : x;
+);
+
+function ui_apply_slider(slidx, val)
+local(mask)
+(
+  slider(slidx) = val;
+  mask = 2 ^ (slidx - 1);
+  sliderchange(mask);
+  slider_automate(mask);
+  ParamUpdateDSP();
+);
+
+function ui_set_if_changed(slidx, val, step)
+local(oldv, tol)
+(
+  step > 0 ? val = floor((val / step) + 0.5) * step;
+  oldv = slider(slidx);
+  tol = step > 0 ? max(0.000001, step * 0.25) : 0.000001;
+  abs(oldv - val) > tol ? ui_apply_slider(slidx, val);
+);
+
+
+function ui_center_str(x, y, w, h, str)
+(
+  gfx_x = x;
+  gfx_y = y;
+  gfx_drawstr(str, 1|4, x+w, y+h);
+);
+
+function ui_center_num(x, y, w, h, val, digits)
+(
+  digits <= 0 ? sprintf(#ui_num, "%d", floor(val + (val >= 0 ? 0.5 : -0.5)))
+  : digits == 1 ? sprintf(#ui_num, "%.1f", val)
+  : sprintf(#ui_num, "%.2f", val);
+
+  gfx_x = x;
+  gfx_y = y;
+  gfx_drawstr(#ui_num, 1|4, x+w, y+h);
+);
+
+
+
+function ui_soft_shadow(x, y, w, h, r, strength)
+local(i, a)
+(
+  i = 0;
+  loop(4,
+    a = strength * (0.26 - i*0.045);
+    gfx_set(0.00, 0.00, 0.00, max(0, a));
+    gfx_roundrect(x+4+i*2, y+6+i*2, w, h, r+i*2, 1);
+    i += 1;
+  );
+);
+
+function ui_bevel_outline(x, y, w, h, r, active)
+(
+  gfx_set(active ? 0.78 : 0.48, active ? 0.84 : 0.62, active ? 0.54 : 0.38, active ? 0.55 : 0.34);
+  gfx_roundrect(x+1, y+1, w-2, h-2, r, 0);
+
+  gfx_set(0.02, 0.03, 0.02, 0.72);
+  gfx_roundrect(x, y, w, h, r, 0);
+
+  gfx_set(0.95, 0.89, 0.62, active ? 0.20 : 0.10);
+  gfx_line(x+r, y+2, x+w-r, y+2, 1);
+  gfx_line(x+2, y+r, x+2, y+h-r, 1);
+
+  gfx_set(0.00, 0.00, 0.00, active ? 0.32 : 0.24);
+  gfx_line(x+r, y+h-2, x+w-r, y+h-2, 1);
+  gfx_line(x+w-2, y+r, x+w-2, y+h-r, 1);
+);
+
+function ui_display_window(x, y, w, h)
+(
+  ui_soft_shadow(x, y, w, h, 8, 0.45);
+  gfx_gradrect(x, y, w, h, 0.025, 0.040, 0.028, 1, 0.000010, 0.000020, 0.000010, 0.000000);
+  gfx_set(0.42, 0.58, 0.39, 0.80);
+  gfx_roundrect(x, y, w, h, 8, 0);
+  gfx_set(0.76, 0.94, 0.70, 0.10);
+  gfx_rect(x+5, y+5, w-10, 2, 1);
+);
+
+function ui_separator(x, y, h)
+(
+  gfx_set(0.00, 0.00, 0.00, 0.36);
+  gfx_line(x, y, x, y+h, 1);
+  gfx_set(0.72, 0.84, 0.60, 0.12);
+  gfx_line(x+1, y, x+1, y+h, 1);
+);
+
+
+
+function ui_outer_panel(x, y, w, h)
+(
+  ui_soft_shadow(x, y, w, h, 18, 0.60);
+  gfx_gradrect(x, y, w, h, 0.18, 0.39, 0.17, 1, 0.000018, -0.000020, 0.000008, 0.000040);
+  gfx_set(0.10, 0.20, 0.10, 0.28);
+  gfx_rect(x+18, y+18, w-36, h-36, 1);
+  ui_bevel_outline(x, y, w, h, 18, 1);
+  gfx_set(0.92, 0.86, 0.58, 0.08);
+  gfx_line(x+34, y+34, x+w-34, y+34, 1);
+);
+
+
+
+function ui_module(x, y, w, h)
+(
+  ui_soft_shadow(x, y, w, h, 12, 0.40);
+  gfx_gradrect(x, y, w, h, 0.115, 0.245, 0.115, 1, 0.000020, -0.000010, 0.000008, 0.000030);
+  gfx_set(0.20, 0.34, 0.17, 0.16);
+  gfx_rect(x+8, y+8, w-16, h-16, 1);
+  ui_bevel_outline(x, y, w, h, 12, 0);
+);
+
+
+
+function ui_group_box(x, y, w, h)
+(
+  ui_soft_shadow(x, y, w, h, 7, 0.25);
+  gfx_gradrect(x, y, w, h, 0.205, 0.325, 0.165, 0.94, -0.000018, -0.000008, -0.000004, 0.000010);
+  gfx_set(0.68, 0.74, 0.48, 0.23);
+  gfx_roundrect(x, y, w, h, 7, 0);
+  gfx_set(0.03, 0.06, 0.03, 0.55);
+  gfx_roundrect(x+1, y+1, w-2, h-2, 6, 0);
+);
+
+
+
+function ui_cell(x, y, w, h, active)
+(
+  ui_soft_shadow(x, y, w, h, 8, active ? 0.34 : 0.22);
+
+  active ? (
+    gfx_gradrect(x, y, w, h, 0.225, 0.385, 0.200, 1, 0.000014, -0.000016, 0.000005, 0.000014);
+  ) : (
+    gfx_gradrect(x, y, w, h, 0.135, 0.250, 0.125, 1, 0.000010, -0.000012, 0.000004, 0.000010);
+  );
+
+  gfx_set(0.00, 0.00, 0.00, 0.16);
+  gfx_rect(x+4, y+h-7, w-8, 3, 1);
+
+  ui_bevel_outline(x, y, w, h, 8, active);
+);
+
+
+
+function ui_dark_window(x, y, w, h)
+(
+  ui_soft_shadow(x, y, w, h, 9, 0.46);
+  gfx_gradrect(x, y, w, h, 0.022, 0.040, 0.026, 1, 0.000020, 0.000010, 0.000012, 0.000000);
+  gfx_set(0.36, 0.48, 0.34, 0.95);
+  gfx_roundrect(x, y, w, h, 9, 0);
+  gfx_set(0.83, 0.91, 0.72, 0.12);
+  gfx_line(x+12, y+3, x+w-12, y+3, 1);
+);
+
+
+
+function ui_screw(x, y)
+(
+  gfx_set(0.00, 0.00, 0.00, 0.42);
+  gfx_circle(x+2, y+3, 9, 1, 1);
+  gfx_gradrect(x-8, y-8, 16, 16, 0.78, 0.76, 0.70, 1, -0.018, -0.016, -0.014, 0);
+  gfx_set(0.18, 0.17, 0.15, 1);
+  gfx_circle(x, y, 8, 0, 1);
+  gfx_set(0.96, 0.92, 0.78, 0.35);
+  gfx_circle(x-3, y-3, 3, 1, 1);
+  gfx_set(0.24, 0.22, 0.18, 1);
+  gfx_line(x-5, y, x+5, y, 1);
+  gfx_line(x, y-5, x, y+5, 1);
+);
+
+
+function ui_section_title(x, y, w, str)
+(
+  gfx_setfont(4, "Arial", 16, 'b');
+  gfx_set(0.93, 0.95, 0.89, 1);
+  ui_center_str(x, y, w, 20, str);
+);
+
+function ui_small_group_title(x, y, w, str)
+(
+  gfx_setfont(5, "Arial", 11, 'b');
+  gfx_set(0.92, 0.95, 0.90, 1);
+  ui_center_str(x, y+1, w, 18, str);
+);
+
+
+function ui_button(x, y, w, h, active, hover, redv)
+(
+  ui_soft_shadow(x, y, w, h, 6, active ? 0.32 : 0.22);
+
+  redv ? (
+    active ? gfx_gradrect(x, y, w, h, hover ? 0.82 : 0.66, hover ? 0.24 : 0.16, hover ? 0.20 : 0.14, 1, -0.00030, -0.00008, -0.00008, 0)
+           : gfx_gradrect(x, y, w, h, hover ? 0.34 : 0.24, hover ? 0.15 : 0.10, hover ? 0.13 : 0.10, 1, -0.00010, -0.00003, -0.00003, 0)
+  ) : (
+    active ? gfx_gradrect(x, y, w, h, hover ? 0.92 : 0.80, hover ? 0.88 : 0.78, hover ? 0.64 : 0.54, 1, -0.00032, -0.00028, -0.00018, 0)
+           : gfx_gradrect(x, y, w, h, hover ? 0.38 : 0.29, hover ? 0.44 : 0.34, hover ? 0.30 : 0.25, 1, -0.00012, -0.00014, -0.00008, 0)
+  );
+
+  gfx_set(0.98, 0.92, 0.62, active ? 0.28 : hover ? 0.14 : 0.07);
+  gfx_line(x+5, y+3, x+w-5, y+3, 1);
+
+  gfx_set(0.00, 0.00, 0.00, active ? 0.28 : 0.22);
+  gfx_line(x+5, y+h-3, x+w-5, y+h-3, 1);
+
+  gfx_set(redv ? 0.11 : 0.08, redv ? 0.06 : 0.09, redv ? 0.06 : 0.07, 1);
+  gfx_roundrect(x, y, w, h, 6, 0);
+);
+
+
+
+function ui_button_text(x, y, w, h, active, hover, redv, str)
+(
+  ui_button(x, y, w, h, active, hover, redv);
+  gfx_setfont(5, "Arial", 12, 'b');
+  redv ? (
+    active ? gfx_set(1.00, 0.92, 0.86, 1) : gfx_set(0.86, 0.74, 0.70, 1);
+  ) : (
+    active ? gfx_set(0.08, 0.10, 0.07, 1) : gfx_set(0.88, 0.91, 0.80, 1);
+  );
+  ui_center_str(x, y, w, h, str);
+);
+
+
+function ui_reset_control(slidx)
+(
+  // Double-click reset. Values mirror the slider defaults.
+  slidx == 1  ? ui_apply_slider(1, 0)
+  : slidx == 2  ? ui_apply_slider(2, 0)
+  : slidx == 3  ? (
+      time_mode == 0 ? ui_apply_slider(3, 50)
+    : time_mode == 1 ? ui_apply_slider(4, 300)
+    : time_mode == 2 ? ui_apply_slider(5, 3)
+    : ( tap_ms_tgt = 500; )
+    )
+  : slidx == 4  ? ui_apply_slider(4, 300)
+  : slidx == 5  ? ui_apply_slider(5, 3)
+  : slidx == 7  ? ui_apply_slider(7, 35)
+  : slidx == 8  ? ui_apply_slider(8, 45)
+  : slidx == 9  ? ui_apply_slider(9, 22)
+  : slidx == 10 ? ui_apply_slider(10, 0)
+  : slidx == 11 ? ui_apply_slider(11, 0)
+  : slidx == 12 ? ui_apply_slider(12, 0)
+  : slidx == 13 ? ui_apply_slider(13, 0)
+  : slidx == 14 ? ui_apply_slider(14, 0)
+  : slidx == 15 ? ui_apply_slider(15, 0)
+  : slidx == 16 ? ui_apply_slider(16, 1)
+  : slidx == 17 ? ui_apply_slider(17, -3)
+  : slidx == 18 ? ui_apply_slider(18, 0)
+  : slidx == 19 ? ui_apply_slider(19, 0)
+  : slidx == 20 ? ui_apply_slider(20, 0)
+  : slidx == 21 ? ui_apply_slider(21, 0)
+  : slidx == 22 ? ui_apply_slider(22, 0)
+  : slidx == 23 ? ui_apply_slider(23, 0)
+  : slidx == 24 ? ui_apply_slider(24, 0.60)
+  : slidx == 25 ? ui_apply_slider(25, 0)
+  : slidx == 26 ? ui_apply_slider(26, 0)
+  : slidx == 27 ? ui_apply_slider(27, 10)
+  : slidx == 28 ? ui_apply_slider(28, 8)
+  : slidx == 29 ? ui_apply_slider(29, 0)
+  : slidx == 30 ? ui_apply_slider(30, 0)
+  : slidx == 31 ? ui_apply_slider(31, 1)
+  : slidx == 32 ? ui_apply_slider(32, 0)
+  : slidx == 33 ? ui_apply_slider(33, 0)
+  : slidx == 36 ? ui_apply_slider(36, 35)
+  : slidx == 37 ? ui_apply_slider(37, 45)
+  : slidx == 38 ? ui_apply_slider(38, 20)
+  : slidx == 39 ? ui_apply_slider(39, 35)
+  : slidx == 40 ? ui_apply_slider(40, 30)
+  : slidx == 1003 ? ( tap_ms_tgt = 500; sliderchange(-1); );
+);
+
+function ui_clamp_manual_value(slidx, val)
+(
+  slidx == 3  ? max(0, min(100, val))
+  : slidx == 4  ? max(20, min(2000, val))
+  : slidx == 5  ? max(0, min(9, val))
+  : slidx == 7  ? max(0, min(110, val))
+  : slidx == 8  ? max(0, min(100, val))
+  : slidx == 9  ? max(0, min(100, val))
+  : slidx == 10 ? max(-12, min(12, val))
+  : slidx == 11 ? max(-12, min(12, val))
+  : slidx == 13 ? max(-24, min(18, val))
+  : slidx == 17 ? max(-24, min(12, val))
+  : slidx == 19 ? max(-100, min(100, val))
+  : slidx == 20 ? max(-100, min(100, val))
+  : slidx == 21 ? max(-100, min(100, val))
+  : slidx == 22 ? max(-100, min(100, val))
+  : slidx == 23 ? max(-100, min(100, val))
+  : slidx == 24 ? max(0.05, min(12, val))
+  : slidx == 26 ? max(0, min(100, val))
+  : slidx == 27 ? max(0, min(100, val))
+  : slidx == 28 ? max(0, min(100, val))
+  : slidx == 32 ? max(-12, min(12, val))
+  : slidx == 33 ? max(-12, min(12, val))
+  : slidx == 36 ? max(0, min(100, val))
+  : slidx == 37 ? max(0, min(100, val))
+  : slidx == 38 ? max(0, min(100, val))
+  : slidx == 39 ? max(0, min(100, val))
+  : slidx == 40 ? max(0, min(100, val))
+  : slidx == 1003 ? max(40, min(230, val))
+  : val;
+);
+
+function ui_step_for_slider(slidx)
+(
+  slidx == 10 || slidx == 11 || slidx == 13 || slidx == 17 || slidx == 32 || slidx == 33 ? 0.1
+  : slidx == 24 ? 0.01
+  : 1;
+);
+
+
+
+function ui_param_metadata(slidx)
+(
+  ui_edit_min = 0;
+  ui_edit_max = 100;
+  ui_edit_def = 0;
+  ui_edit_unit_type = 0;
+  ui_edit_negative_ok = 0;
+  strcpy(#ui_edit_name, "PARAMETER");
+
+  slidx == 3 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 50; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "REPEAT RATE");
+  ) : slidx == 4 ? (
+    ui_edit_min = 20; ui_edit_max = 2000; ui_edit_def = 300; ui_edit_unit_type = 4; strcpy(#ui_edit_name, "MANUAL TIME");
+  ) : slidx == 1003 ? (
+    ui_edit_min = 40; ui_edit_max = 230; ui_edit_def = 120; ui_edit_unit_type = 5; strcpy(#ui_edit_name, "TAP TEMPO");
+  ) : slidx == 7 ? (
+    ui_edit_min = 0; ui_edit_max = 110; ui_edit_def = 35; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "INTENSITY");
+  ) : slidx == 8 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 45; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "ECHO VOLUME");
+  ) : slidx == 9 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 22; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "REVERB VOLUME");
+  ) : slidx == 10 ? (
+    ui_edit_min = -12; ui_edit_max = 12; ui_edit_def = 0; ui_edit_unit_type = 2; strcpy(#ui_edit_name, "BASS - ECHO");
+  ) : slidx == 11 ? (
+    ui_edit_min = -12; ui_edit_max = 12; ui_edit_def = 0; ui_edit_unit_type = 2; strcpy(#ui_edit_name, "TREBLE - ECHO");
+  ) : slidx == 13 ? (
+    ui_edit_min = -24; ui_edit_max = 18; ui_edit_def = 0; ui_edit_unit_type = 2; strcpy(#ui_edit_name, "INPUT LEVEL");
+  ) : slidx == 17 ? (
+    ui_edit_min = -24; ui_edit_max = 12; ui_edit_def = -3; ui_edit_unit_type = 2; strcpy(#ui_edit_name, "MASTER");
+  ) : slidx == 19 ? (
+    ui_edit_min = -100; ui_edit_max = 100; ui_edit_def = 0; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "CONDITION");
+  ) : slidx == 20 ? (
+    ui_edit_min = -100; ui_edit_max = 100; ui_edit_def = 0; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "W/F DISCREPANCY");
+  ) : slidx == 21 ? (
+    ui_edit_min = -100; ui_edit_max = 100; ui_edit_def = 0; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "MOTOR TORQUE");
+  ) : slidx == 22 ? (
+    ui_edit_min = -100; ui_edit_max = 100; ui_edit_def = 0; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "LOW CUT");
+  ) : slidx == 23 ? (
+    ui_edit_min = -100; ui_edit_max = 100; ui_edit_def = 0; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "HIGH CUT");
+  ) : slidx == 24 ? (
+    ui_edit_min = 0.05; ui_edit_max = 12; ui_edit_def = 0.60; ui_edit_unit_type = 3; strcpy(#ui_edit_name, "LFO RATE");
+  ) : slidx == 26 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 0; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "LFO DEPTH");
+  ) : slidx == 27 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 10; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "DRIVE");
+  ) : slidx == 28 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 8; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "NOISE");
+  ) : slidx == 32 ? (
+    ui_edit_min = -12; ui_edit_max = 12; ui_edit_def = 0; ui_edit_unit_type = 2; strcpy(#ui_edit_name, "REVERB BASS");
+  ) : slidx == 33 ? (
+    ui_edit_min = -12; ui_edit_max = 12; ui_edit_def = 0; ui_edit_unit_type = 2; strcpy(#ui_edit_name, "REVERB TREBLE");
+  ) : slidx == 36 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 35; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "SPRING DWELL");
+  ) : slidx == 37 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 45; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "SPRING DECAY");
+  ) : slidx == 38 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 20; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "SPRING DRIP");
+  ) : slidx == 39 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 35; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "SPRING BOUNCE");
+  ) : slidx == 40 ? (
+    ui_edit_min = 0; ui_edit_max = 100; ui_edit_def = 30; ui_edit_unit_type = 1; strcpy(#ui_edit_name, "SPRING GRAIN");
+  );
+
+  ui_edit_negative_ok = ui_edit_min < 0;
+);
+
+function ui_apply_manual_value(slidx, val)
+local(v, st)
+(
+  v = ui_clamp_manual_value(slidx, val);
+  st = ui_step_for_slider(slidx);
+
+  slidx == 1003 ? (
+    tap_ms_tgt = 60000 / max(40, min(230, v));
+  ) : (
+    ui_set_if_changed(slidx, v, st);
+  );
+);
+
+function ui_start_edit(slidx, val, digits)
+(
+  ui_edit_slid = slidx;
+  ui_edit_digits = digits;
+  val = ui_clamp_manual_value(slidx, val);
+  ui_param_metadata(slidx);
+
+  // v7.6.0: robust numeric mouse-only entry state instead of string editing.
+  ui_edit_sign = 1;
+  ui_edit_int = 0;
+  ui_edit_digit_count = 0;
+  ui_edit_decimal_on = 0;
+  ui_edit_frac_digits = 0;
+  ui_edit_current_value = val;
+  strcpy(#ui_edit_buf, "");
+
+  sliderchange(-1);
+);
+
+function ui_try_click_value(slidx, x, y, w, h, val, digits)
+local(hit)
+(
+  hit = ui_edit_slid <= 0 && slidx != 0 && ui_mx >= x && ui_mx <= x+w && ui_my >= y && ui_my <= y+h;
+
+  hit ? (
+    gfx_set(0.62, 0.74, 0.56, 0.18);
+    gfx_roundrect(x, y, w, h, 4, 1);
+  );
+
+  hit && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? (
+    ui_edit_x = x;
+    ui_edit_y = y;
+    ui_edit_w = w;
+    ui_edit_h = h;
+    ui_start_edit(slidx, val, digits);
+  );
+
+  hit;
+);
+
+
+function ui_edit_divisor()
+local(div, i)
+(
+  div = 1;
+  i = 0;
+  loop(ui_edit_frac_digits,
+    div *= 10;
+    i += 1;
+  );
+  div;
+);
+
+
+function ui_edit_refresh_display()
+local(div, v)
+(
+  div = ui_edit_divisor();
+  v = ui_edit_int / max(1, div);
+  ui_edit_sign < 0 ? v = -v;
+
+  ui_edit_digit_count <= 0 ? (
+    ui_edit_decimal_on ? (
+      ui_edit_sign < 0 ? strcpy(#ui_edit_buf, "-0.") : strcpy(#ui_edit_buf, "0.");
+    ) : (
+      ui_edit_sign < 0 ? strcpy(#ui_edit_buf, "-") : strcpy(#ui_edit_buf, "");
+    );
+  ) : ui_edit_decimal_on && ui_edit_frac_digits <= 0 ? (
+    sprintf(#ui_edit_buf, "%.0f.", v);
+  ) : (
+    ui_edit_frac_digits <= 0 ? sprintf(#ui_edit_buf, "%d", floor(v + (v >= 0 ? 0.5 : -0.5)))
+    : ui_edit_frac_digits == 1 ? sprintf(#ui_edit_buf, "%.1f", v)
+    : ui_edit_frac_digits == 2 ? sprintf(#ui_edit_buf, "%.2f", v)
+    : ui_edit_frac_digits == 3 ? sprintf(#ui_edit_buf, "%.3f", v)
+    : sprintf(#ui_edit_buf, "%.4f", v);
+  );
+);
+
+
+function ui_edit_append_digit(d)
+(
+  // Limit to 9 total digits and 4 decimal places to keep entry safe.
+  ui_edit_digit_count < 9 && (!ui_edit_decimal_on || ui_edit_frac_digits < 4) ? (
+    ui_edit_int = ui_edit_int * 10 + d;
+    ui_edit_digit_count += 1;
+    ui_edit_decimal_on ? ui_edit_frac_digits += 1;
+    ui_edit_refresh_display();
+  );
+);
+
+function ui_edit_decimal_point()
+(
+  ui_edit_decimal_on = 1;
+  ui_edit_refresh_display();
+);
+
+
+function ui_edit_toggle_sign()
+(
+  ui_edit_negative_ok ? (
+    ui_edit_sign *= -1;
+    ui_edit_refresh_display();
+  );
+);
+
+
+
+function ui_edit_backspace()
+(
+  ui_edit_decimal_on && ui_edit_frac_digits <= 0 ? (
+    ui_edit_decimal_on = 0;
+  ) : ui_edit_digit_count > 0 ? (
+    ui_edit_int = floor(ui_edit_int / 10);
+    ui_edit_digit_count -= 1;
+    ui_edit_decimal_on && ui_edit_frac_digits > 0 ? ui_edit_frac_digits -= 1;
+  ) : (
+    ui_edit_sign < 0 ? ui_edit_sign = 1;
+  );
+
+  ui_edit_digit_count <= 0 ? (
+    ui_edit_int = 0;
+    ui_edit_frac_digits = 0;
+  );
+
+  ui_edit_refresh_display();
+);
+
+
+function ui_edit_clear()
+(
+  ui_edit_sign = 1;
+  ui_edit_int = 0;
+  ui_edit_digit_count = 0;
+  ui_edit_decimal_on = 0;
+  ui_edit_frac_digits = 0;
+  strcpy(#ui_edit_buf, "");
+);
+
+function ui_edit_apply()
+local(v)
+(
+  ui_edit_digit_count > 0 ? (
+    v = ui_edit_int / max(1, ui_edit_divisor());
+    ui_edit_sign < 0 ? v = -v;
+    ui_apply_manual_value(ui_edit_slid, v);
+  );
+  ui_edit_slid = 0;
+);
+
+function ui_modal_button(x, y, w, h, label, redv)
+local(hit)
+(
+  hit = ui_mx >= x && ui_mx <= x+w && ui_my >= y && ui_my <= y+h;
+  ui_button_text(x, y, w, h, 0, hit, redv, label);
+  hit && mouse_down && !mouse_down_last;
+);
+
+
+
+function ui_modal_format_value(val, digits, unit_type)
+(
+  unit_type == 1 ? (
+    digits <= 0 ? sprintf(#ui_modal_fmt, "%d%%", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_modal_fmt, "%.1f%%", val)
+    : sprintf(#ui_modal_fmt, "%.2f%%", val);
+  ) : unit_type == 2 ? (
+    digits <= 0 ? sprintf(#ui_modal_fmt, "%d dB", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_modal_fmt, "%.1f dB", val)
+    : sprintf(#ui_modal_fmt, "%.2f dB", val);
+  ) : unit_type == 3 ? (
+    digits <= 0 ? sprintf(#ui_modal_fmt, "%d Hz", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_modal_fmt, "%.1f Hz", val)
+    : sprintf(#ui_modal_fmt, "%.2f Hz", val);
+  ) : unit_type == 4 ? (
+    digits <= 0 ? sprintf(#ui_modal_fmt, "%d ms", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_modal_fmt, "%.1f ms", val)
+    : sprintf(#ui_modal_fmt, "%.2f ms", val);
+  ) : unit_type == 5 ? (
+    digits <= 0 ? sprintf(#ui_modal_fmt, "%d BPM", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_modal_fmt, "%.1f BPM", val)
+    : sprintf(#ui_modal_fmt, "%.2f BPM", val);
+  ) : (
+    digits <= 0 ? sprintf(#ui_modal_fmt, "%d", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_modal_fmt, "%.1f", val)
+    : sprintf(#ui_modal_fmt, "%.2f", val);
+  );
+);
+
+function ui_modal_button_enabled(x, y, w, h, label, redv, enabled)
+local(hit)
+(
+  hit = enabled && ui_mx >= x && ui_mx <= x+w && ui_my >= y && ui_my <= y+h;
+  enabled ? (
+    ui_button_text(x, y, w, h, 0, hit, redv, label);
+  ) : (
+    ui_button(x, y, w, h, 0, 0, 0);
+    gfx_setfont(5, "Arial", 12, 'b');
+    gfx_set(0.36, 0.42, 0.34, 1);
+    ui_center_str(x, y, w, h, label);
+  );
+  hit && mouse_down && !mouse_down_last;
+);
+
+
+function ui_draw_edit_box()
+local(bx, by, bw, bh, kx, ky, kw, kh, kg, rowh, c0, c1, c2, info_x, info_y, info_w, info_h)
+(
+  ui_edit_slid > 0 ? (
+    // Modal dim layer: mouse-only editor.
+    gfx_set(0, 0, 0, 0.80);
+    gfx_rect(0, 0, ui_base_w, ui_base_h, 1);
+
+    ui_edit_w > 0 && ui_edit_h > 0 ? (
+      gfx_set(1.00, 0.78, 0.28, 0.18);
+      gfx_roundrect(ui_edit_x-13, ui_edit_y-10, ui_edit_w+26, ui_edit_h+20, 8, 1);
+      gfx_set(1.00, 0.90, 0.42, 1);
+      gfx_roundrect(ui_edit_x-13, ui_edit_y-10, ui_edit_w+26, ui_edit_h+20, 8, 0);
+    );
+
+    bx = ui_base_w*0.5 - 330;
+    by = ui_base_h*0.5 - 230;
+    bw = 660;
+    bh = 460;
+
+    ui_soft_shadow(bx, by, bw, bh, 14, 0.72);
+    gfx_gradrect(bx, by, bw, bh, 0.030, 0.052, 0.032, 0.99, 0.000020, 0.000014, 0.000010, 0);
+    gfx_set(0.62, 0.76, 0.52, 1);
+    gfx_roundrect(bx, by, bw, bh, 14, 0);
+    gfx_set(0.96, 0.80, 0.38, 0.30);
+    gfx_line(bx+20, by+4, bx+bw-20, by+4, 1);
+
+    gfx_setfont(5, "Arial", 13, 'b');
+    gfx_set(0.92, 0.78, 0.36, 1);
+    ui_center_str(bx+20, by+17, bw-40, 16, "MOUSE-ONLY PARAMETER EDITOR");
+
+    gfx_setfont(5, "Arial", 23, 'b');
+    gfx_set(0.94, 0.97, 0.88, 1);
+    ui_center_str(bx+20, by+38, bw-40, 30, #ui_edit_name);
+
+    ui_display_window(bx+54, by+82, bw-108, 56);
+    gfx_setfont(6, "Courier New", 29, 'b');
+    gfx_set(0.88, 1.00, 0.78, 1);
+    strlen(#ui_edit_buf) > 0 ? ui_center_str(bx+54, by+92, bw-108, 36, #ui_edit_buf)
+                              : ui_center_str(bx+54, by+92, bw-108, 36, "--");
+
+    info_x = bx + 62;
+    info_y = by + 152;
+    info_w = bw - 124;
+    info_h = 54;
+    gfx_set(0.11, 0.18, 0.11, 0.78);
+    gfx_roundrect(info_x, info_y, info_w, info_h, 8, 1);
+    gfx_set(0.46, 0.62, 0.40, 0.65);
+    gfx_roundrect(info_x, info_y, info_w, info_h, 8, 0);
+
+    gfx_setfont(5, "Arial", 11, 'b');
+    gfx_set(0.86, 0.91, 0.76, 1);
+
+    ui_modal_format_value(ui_edit_current_value, ui_edit_digits, ui_edit_unit_type);
+    gfx_x = info_x + 16; gfx_y = info_y + 10; gfx_drawstr("CURRENT:");
+    gfx_x = info_x + 88; gfx_y = info_y + 10; gfx_drawstr(#ui_modal_fmt);
+
+    ui_modal_format_value(ui_edit_def, ui_edit_digits, ui_edit_unit_type);
+    gfx_x = info_x + 280; gfx_y = info_y + 10; gfx_drawstr("DEFAULT:");
+    gfx_x = info_x + 354; gfx_y = info_y + 10; gfx_drawstr(#ui_modal_fmt);
+
+    ui_modal_format_value(ui_edit_min, ui_edit_digits, ui_edit_unit_type);
+    gfx_x = info_x + 16; gfx_y = info_y + 31; gfx_drawstr("MIN:");
+    gfx_x = info_x + 88; gfx_y = info_y + 31; gfx_drawstr(#ui_modal_fmt);
+
+    ui_modal_format_value(ui_edit_max, ui_edit_digits, ui_edit_unit_type);
+    gfx_x = info_x + 280; gfx_y = info_y + 31; gfx_drawstr("MAX:");
+    gfx_x = info_x + 354; gfx_y = info_y + 31; gfx_drawstr(#ui_modal_fmt);
+
+    kx = bx + 82;
+    ky = by + 226;
+    kw = 82;
+    kh = 44;
+    kg = 10;
+    rowh = kh + kg;
+
+    // Numeric keypad.
+    ui_modal_button(kx, ky, kw, kh, "7", 0) ? ui_edit_append_digit(7);
+    ui_modal_button(kx+kw+kg, ky, kw, kh, "8", 0) ? ui_edit_append_digit(8);
+    ui_modal_button(kx+(kw+kg)*2, ky, kw, kh, "9", 0) ? ui_edit_append_digit(9);
+
+    ui_modal_button(kx, ky+rowh, kw, kh, "4", 0) ? ui_edit_append_digit(4);
+    ui_modal_button(kx+kw+kg, ky+rowh, kw, kh, "5", 0) ? ui_edit_append_digit(5);
+    ui_modal_button(kx+(kw+kg)*2, ky+rowh, kw, kh, "6", 0) ? ui_edit_append_digit(6);
+
+    ui_modal_button(kx, ky+rowh*2, kw, kh, "1", 0) ? ui_edit_append_digit(1);
+    ui_modal_button(kx+kw+kg, ky+rowh*2, kw, kh, "2", 0) ? ui_edit_append_digit(2);
+    ui_modal_button(kx+(kw+kg)*2, ky+rowh*2, kw, kh, "3", 0) ? ui_edit_append_digit(3);
+
+    ui_modal_button_enabled(kx, ky+rowh*3, kw, kh, "+/-", 0, ui_edit_negative_ok) ? ui_edit_toggle_sign();
+    ui_modal_button(kx+kw+kg, ky+rowh*3, kw, kh, "0", 0) ? ui_edit_append_digit(0);
+    ui_modal_button(kx+(kw+kg)*2, ky+rowh*3, kw, kh, ".", 0) ? ui_edit_decimal_point();
+
+    // Editing buttons.
+    c0 = bx + 394;
+    c1 = c0 + 91;
+    c2 = c1 + 91;
+
+    ui_modal_button(c0, ky, 82, kh, "DEL", 0) ? ui_edit_backspace();
+    ui_modal_button(c1, ky, 82, kh, "CLR", 0) ? ui_edit_clear();
+
+    ui_modal_button(c0, ky+rowh, 173, kh, "DEFAULT", 0) ? (
+      ui_reset_control(ui_edit_slid);
+      ui_edit_slid = 0;
+    );
+
+    ui_modal_button(c0, ky+rowh*2, 173, kh, "CANCEL", 1) ? ui_edit_slid = 0;
+    ui_modal_button(c0, ky+rowh*3, 173, kh, "APPLY", 0) ? ui_edit_apply();
+
+  );
+);
+
+
+function ui_format_value_string(val, digits, unit_type)
+(
+  // unit_type: 0 none, 1 %, 2 dB, 3 Hz, 4 ms, 5 BPM.
+  unit_type == 1 ? (
+    digits <= 0 ? sprintf(#ui_value_str, "%d%%", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_value_str, "%.1f%%", val)
+    : sprintf(#ui_value_str, "%.2f%%", val);
+  ) : unit_type == 2 ? (
+    digits <= 0 ? sprintf(#ui_value_str, "%d dB", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_value_str, "%.1f dB", val)
+    : sprintf(#ui_value_str, "%.2f dB", val);
+  ) : unit_type == 3 ? (
+    digits <= 0 ? sprintf(#ui_value_str, "%d Hz", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_value_str, "%.1f Hz", val)
+    : sprintf(#ui_value_str, "%.2f Hz", val);
+  ) : unit_type == 4 ? (
+    digits <= 0 ? sprintf(#ui_value_str, "%d ms", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_value_str, "%.1f ms", val)
+    : sprintf(#ui_value_str, "%.2f ms", val);
+  ) : unit_type == 5 ? (
+    digits <= 0 ? sprintf(#ui_value_str, "%d BPM", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_value_str, "%.1f BPM", val)
+    : sprintf(#ui_value_str, "%.2f BPM", val);
+  ) : (
+    digits <= 0 ? sprintf(#ui_value_str, "%d", floor(val + (val >= 0 ? 0.5 : -0.5)))
+    : digits == 1 ? sprintf(#ui_value_str, "%.1f", val)
+    : sprintf(#ui_value_str, "%.2f", val);
+  );
+);
+
+
+
+function ui_led(x, y, onv, r, g, b)
+(
+  gfx_set(0.00, 0.00, 0.00, 0.42);
+  gfx_circle(x+2, y+3, 13, 1, 1);
+
+  onv ? (
+    gfx_set(r, g, b, 0.18);
+    gfx_circle(x, y, 22, 1, 1);
+    gfx_set(r, g, b, 0.30);
+    gfx_circle(x, y, 16, 1, 1);
+    gfx_set(r*0.48, g*0.48, b*0.48, 1);
+    gfx_circle(x, y, 12, 1, 1);
+    gfx_set(min(1,r+0.14), min(1,g+0.14), min(1,b+0.14), 1);
+    gfx_circle(x, y, 8, 1, 1);
+    gfx_set(1.0, 1.0, 0.92, 0.72);
+    gfx_circle(x-3, y-3, 3.6, 1, 1);
+  ) : (
+    gfx_set(r*0.10, g*0.10, b*0.10, 1);
+    gfx_circle(x, y, 12, 1, 1);
+    gfx_set(r*0.24, g*0.24, b*0.24, 1);
+    gfx_circle(x, y, 7.5, 1, 1);
+    gfx_set(0.02, 0.025, 0.02, 0.55);
+    gfx_circle(x, y, 12, 0, 1);
+  );
+);
+
+
+
+
+function ui_knob_draw(cx, cy, r, norm, active)
+local(a, tx, ty, i, ticka, ring_r, body_r, core_r)
+(
+  norm = ui_clip01(norm);
+  ring_r = r + 17;
+  body_r = r;
+  core_r = r * 0.63;
+
+  // Soft circular drop shadow.
+  gfx_set(0.00, 0.00, 0.00, 0.30);
+  gfx_circle(cx+5, cy+7, ring_r+6, 1, 1);
+  gfx_set(0.00, 0.00, 0.00, 0.18);
+  gfx_circle(cx+3, cy+4, ring_r+10, 1, 1);
+
+  // Outer olive dial plate.
+  gfx_set(active ? 0.23 : 0.14, active ? 0.39 : 0.27, active ? 0.18 : 0.12, 1);
+  gfx_circle(cx, cy, ring_r, 1, 1);
+  gfx_set(0.03, 0.06, 0.03, 0.70);
+  gfx_circle(cx, cy, ring_r, 0, 1);
+  gfx_set(0.66, 0.72, 0.42, active ? 0.52 : 0.34);
+  gfx_circle(cx, cy, ring_r-3, 0, 1);
+
+  // Tick marks.
+  i = 0;
+  loop(13,
+    ticka = (-1.25*$pi) + i*(1.5*$pi/12);
+    gfx_set(0.96, 0.78, 0.28, i <= floor(norm*12 + 0.0001) ? 0.88 : 0.20);
+    gfx_line(cx + cos(ticka)*(r+8), cy + sin(ticka)*(r+8), cx + cos(ticka)*(r+16), cy + sin(ticka)*(r+16), 1);
+    i += 1;
+  );
+
+  // Black recess ring.
+  gfx_set(0.015, 0.022, 0.014, 0.86);
+  gfx_circle(cx+2, cy+3, body_r+8, 1, 1);
+  gfx_set(0.02, 0.03, 0.02, 1);
+  gfx_circle(cx, cy, body_r+5, 1, 1);
+
+  // Circular metal body. Built only from circles to avoid rectangular artifacts.
+  gfx_set(active ? 0.88 : 0.76, active ? 0.88 : 0.78, active ? 0.80 : 0.70, 1);
+  gfx_circle(cx, cy, body_r, 1, 1);
+  gfx_set(0.98, 0.98, 0.92, 0.34);
+  gfx_circle(cx-r*0.23, cy-r*0.26, body_r*0.66, 1, 1);
+  gfx_set(0.50, 0.51, 0.48, 1);
+  gfx_circle(cx, cy, body_r, 0, 1);
+  gfx_set(0.25, 0.26, 0.24, 0.38);
+  gfx_circle(cx+2, cy+2, body_r*0.76, 0, 1);
+
+  // Inner circular cap.
+  gfx_set(active ? 0.70 : 0.61, active ? 0.71 : 0.62, active ? 0.67 : 0.58, 1);
+  gfx_circle(cx, cy, core_r, 1, 1);
+  gfx_set(0.24, 0.25, 0.24, 1);
+  gfx_circle(cx, cy, core_r, 0, 1);
+  gfx_set(0.95, 0.95, 0.88, 0.24);
+  gfx_circle(cx-core_r*0.26, cy-core_r*0.28, core_r*0.52, 1, 1);
+
+  // Pointer.
+  a = (-1.25*$pi) + norm*(1.5*$pi);
+  tx = cx + cos(a)*(r*0.82);
+  ty = cy + sin(a)*(r*0.82);
+  gfx_set(0.035, 0.032, 0.028, 1);
+  gfx_line(cx, cy, tx, ty, 1);
+  gfx_line(cx+1, cy, tx+1, ty, 1);
+  gfx_set(0.95, 0.67, 0.24, active ? 0.80 : 0.52);
+  gfx_circle(tx, ty, 2.2, 1, 1);
+
+  // Center screw.
+  gfx_set(0.030, 0.030, 0.026, 1);
+  gfx_circle(cx, cy, r*0.085, 1, 1);
+);
+
+
+function ui_knob_control(id, cx, cy, r, norm)
+local(hit, delta)
+(
+  norm = ui_clip01(norm);
+  hit = ((ui_mx - cx)*(ui_mx - cx) + (ui_my - cy)*(ui_my - cy)) <= (r+22)*(r+22);
+
+  hit && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? (
+    ui_click_frame - ui_last_click_frame <= 18 && ui_last_click_id == id ? (
+      ui_reset_control(id);
+      ui_drag_id = 0;
+      ui_last_click_id = -1;
+      ui_last_click_frame = -1000;
+    ) : (
+      ui_drag_id = id;
+      ui_drag_start_y = ui_my;
+      ui_drag_start_norm = norm;
+      ui_last_click_id = id;
+      ui_last_click_frame = ui_click_frame;
+      sliderchange(-1);
+    );
+  );
+
+  ui_drag_id == id && mouse_down ? (
+    delta = (ui_drag_start_y - ui_my) / 175;
+    norm = ui_clip01(ui_drag_start_norm + delta);
+  );
+
+  ui_knob_draw(cx, cy, r, norm, hit || ui_drag_id == id);
+  norm;
+);
+
+
+
+function ui_selector_draw(cx, cy, r, step, total, active)
+local(i, a, dx, dy, px, py, led_r, body_r, core_r)
+(
+  led_r = r + 34;
+  body_r = r;
+  core_r = r * 0.64;
+
+  // Circular shadow and dial plate.
+  gfx_set(0.00, 0.00, 0.00, 0.34);
+  gfx_circle(cx+6, cy+8, r+46, 1, 1);
+  gfx_set(0.00, 0.00, 0.00, 0.18);
+  gfx_circle(cx+3, cy+4, r+52, 1, 1);
+
+  gfx_set(active ? 0.21 : 0.13, active ? 0.36 : 0.24, active ? 0.17 : 0.11, 1);
+  gfx_circle(cx, cy, r+42, 1, 1);
+  gfx_set(0.66, 0.72, 0.42, active ? 0.54 : 0.34);
+  gfx_circle(cx, cy, r+42, 0, 1);
+  gfx_set(0.02, 0.04, 0.02, 0.70);
+  gfx_circle(cx, cy, r+33, 0, 1);
+
+  // LEDs around the mode selector.
+  i = 0;
+  loop(total,
+    a = (2*$pi/3) + (i/total) * (2*$pi);
+    dx = cx + cos(a) * led_r;
+    dy = cy + sin(a) * led_r;
+    // Position 12 LED is blue; all other position LEDs remain amber/brown.
+    i == 11 ? (
+      i == step ? ui_led(dx, dy, 1, 0.34, 0.80, 0.96)
+                : ui_led(dx, dy, 0, 0.18, 0.44, 0.62);
+    ) : (
+      i == step ? ui_led(dx, dy, 1, 0.98, 0.72, 0.22)
+                : ui_led(dx, dy, 0, 0.60, 0.48, 0.18);
+    );
+    i += 1;
+  );
+
+  // Black recess ring.
+  gfx_set(0.015, 0.022, 0.014, 0.86);
+  gfx_circle(cx+3, cy+4, body_r+10, 1, 1);
+  gfx_set(0.02, 0.03, 0.02, 1);
+  gfx_circle(cx, cy, body_r+6, 1, 1);
+
+  // Circular metal selector body.
+  gfx_set(active ? 0.88 : 0.78, active ? 0.89 : 0.80, active ? 0.81 : 0.72, 1);
+  gfx_circle(cx, cy, body_r, 1, 1);
+  gfx_set(0.98, 0.98, 0.92, 0.36);
+  gfx_circle(cx-body_r*0.23, cy-body_r*0.26, body_r*0.66, 1, 1);
+  gfx_set(0.50, 0.51, 0.48, 1);
+  gfx_circle(cx, cy, body_r, 0, 1);
+
+  // Inner cap.
+  gfx_set(active ? 0.70 : 0.61, active ? 0.71 : 0.62, active ? 0.67 : 0.58, 1);
+  gfx_circle(cx, cy, core_r, 1, 1);
+  gfx_set(0.24, 0.25, 0.24, 1);
+  gfx_circle(cx, cy, core_r, 0, 1);
+  gfx_set(0.95, 0.95, 0.88, 0.22);
+  gfx_circle(cx-core_r*0.26, cy-core_r*0.28, core_r*0.52, 1, 1);
+
+  // Pointer.
+  a = (2*$pi/3) + (step/12) * (2*$pi);
+  px = cx + cos(a) * (r*0.78);
+  py = cy + sin(a) * (r*0.78);
+  gfx_set(0.035, 0.032, 0.028, 1);
+  gfx_line(cx, cy, px, py, 1);
+  gfx_line(cx+1, cy, px+1, py, 1);
+  gfx_set(0.95, 0.67, 0.24, active ? 0.82 : 0.55);
+  gfx_circle(px, py, 2.6, 1, 1);
+
+  // Center screw.
+  gfx_set(0.030, 0.030, 0.026, 1);
+  gfx_circle(cx, cy, r*0.08, 1, 1);
+);
+
+
+function ui_selector_control(id, cx, cy, r, step, total)
+local(hit, delta, cur)
+(
+  cur = step;
+  hit = ((ui_mx - cx)*(ui_mx - cx) + (ui_my - cy)*(ui_my - cy)) <= (r+42)*(r+42);
+
+  hit && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? (
+    ui_click_frame - ui_last_click_frame <= 18 && ui_last_click_id == (1000 + id) ? (
+      ui_reset_control(id);
+      ui_drag_id = 0;
+      ui_last_click_id = -1;
+      ui_last_click_frame = -1000;
+    ) : (
+      ui_drag_id = 1000 + id;
+      ui_drag_start_y = ui_my;
+      ui_drag_start_norm = step;
+      ui_last_click_id = 1000 + id;
+      ui_last_click_frame = ui_click_frame;
+      sliderchange(-1);
+    );
+  );
+
+  ui_drag_id == (1000 + id) && mouse_down ? (
+    delta = (ui_drag_start_y - ui_my) / 12;
+    cur = floor(ui_drag_start_norm + delta + 0.5);
+    cur < 0 ? cur = 0;
+    cur > (total-1) ? cur = total-1;
+  );
+
+  ui_selector_draw(cx, cy, r, cur, total, hit || ui_drag_id == (1000 + id));
+  cur;
+);
+
+// Responsive render target.
+ui_base_w = 1920;
+ui_base_h = 1080;
+ui_scale = min(gfx_w / ui_base_w, gfx_h / ui_base_h);
+ui_scale <= 0 ? ui_scale = 1;
+
+ui_draw_w = ui_base_w * ui_scale;
+ui_draw_h = ui_base_h * ui_scale;
+ui_ox = (gfx_w - ui_draw_w) * 0.5;
+ui_oy = (gfx_h - ui_draw_h) * 0.5;
+
+ui_mx = (mouse_x - ui_ox) / ui_scale;
+ui_my = (mouse_y - ui_oy) / ui_scale;
+ui_mx < 0 || ui_mx > ui_base_w || ui_my < 0 || ui_my > ui_base_h ? (
+  ui_mx = -100000;
+  ui_my = -100000;
+);
+
+gfx_setimgdim(0, ui_base_w, ui_base_h);
+gfx_dest = 0;
+
+// Hide/show native controls every frame.
+idx_gfx_vis = 0;
+loop(41,
+  slider_show(2 ^ idx_gfx_vis, 0);
+  idx_gfx_vis += 1;
+);
+
+ui_mode >= 0.5 ? (
+  slider_show(1, 1);
+  slider_show(2, 1);
+  slider_show(4,  time_mode == 0);
+  slider_show(8,  time_mode == 1);
+  slider_show(16, time_mode == 2);
+  slider_show(32, 0);
+  idx_gfx_vis = 6;
+  loop(27,
+    slider_show(2 ^ idx_gfx_vis, 1);
+    idx_gfx_vis += 1;
+  );
+  idx_gfx_vis = 35;
+  loop(5,
+    slider_show(2 ^ idx_gfx_vis, 1);
+    idx_gfx_vis += 1;
+  );
+);
+
+ui_click_frame += 1;
+mouse_down = mouse_cap & 1;
+!mouse_down && mouse_down_last && ui_drag_id > 0 ? (
+  sliderchange(-1);
+  ui_drag_id = 0;
+);
+
+// Global proportional layout.
+cab_m = 28;
+pad_x = 54;
+pad_y = 36;
+inner_x = 64;
+inner_y = 40;
+inner_w = ui_base_w - inner_x*2;
+header_h = 108;
+module_gap = 26;
+status_h = 114;
+status_y = ui_base_h - pad_y - status_h - 24;
+content_y = inner_y + header_h + 22;
+content_h = status_y - content_y - 24;
+
+left_w = floor(inner_w * 0.224);
+left_x = inner_x;
+main_x = left_x + left_w + module_gap;
+main_w = inner_w - left_w - module_gap;
+left_y = content_y;
+main_y = content_y;
+status_x = inner_x;
+status_w = inner_w;
+
+// Background.
+gfx_set(0.050, 0.098, 0.055, 1);
+gfx_rect(0, 0, ui_base_w, ui_base_h, 1);
+gfx_gradrect(0, 0, ui_base_w, ui_base_h, 0.11, 0.23, 0.12, 1, 0, -0.000015, 0, 0.000055);
+
+// Cabinet.
+ui_outer_panel(cab_m, cab_m, ui_base_w - cab_m*2, ui_base_h - cab_m*2);
+ui_screw(cab_m+20, cab_m+20);
+ui_screw(ui_base_w-cab_m-20, cab_m+20);
+ui_screw(cab_m+20, ui_base_h-cab_m-20);
+ui_screw(ui_base_w-cab_m-20, ui_base_h-cab_m-20);
+
+// Header.
+header_x = inner_x;
+header_y = inner_y;
+header_w = inner_w;
+ui_soft_shadow(header_x, header_y, header_w, header_h, 10, 0.34);
+gfx_gradrect(header_x, header_y, header_w, header_h, 0.065, 0.125, 0.070, 1, 0.000040, 0.000030, 0.000020, 0);
+ui_bevel_outline(header_x, header_y, header_w, header_h, 10, 0);
+gfx_set(0.96, 0.78, 0.32, 0.16); gfx_line(header_x+22, header_y+header_h-12, header_x+header_w-22, header_y+header_h-12, 1);
+gfx_set(0.88, 0.92, 0.83, 1);
+gfx_setfont(2, "Arial", 48, 'b');
+gfx_x = header_x + 28; gfx_y = header_y + 34; gfx_drawstr("SPACE ECHO");
+gfx_setfont(3, "Arial", 18, 'b');
+gfx_x = header_x + 468; gfx_y = header_y + 44; gfx_drawstr("RE-201 inspired - premium cabinet + robust mouse editor v7.6.1");
+
+ui_x = header_x + header_w - 188;
+ui_y = header_y + 34;
+ui_w = 152;
+ui_h = 38;
+ui_hit = ui_mx >= ui_x && ui_mx <= ui_x + ui_w && ui_my >= ui_y && ui_my <= ui_y + ui_h;
+ui_button_text(ui_x, ui_y, ui_w, ui_h, 1, ui_hit, 0, ui_mode >= 0.5 ? "NATIVE CTRL" : "GRAPHIC UI");
+ui_hit && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? (
+  ui_mode >= 0.5 ? ui_apply_slider(41, 0) : ui_apply_slider(41, 1);
+  sliderchange(-1);
+);
+
+// Modules.
+ui_module(left_x, left_y, left_w, content_h);
+ui_module(main_x, main_y, main_w, content_h);
+ui_dark_window(status_x, status_y, status_w, status_h);
+
+ui_section_title(left_x+18, left_y+18, left_w-36, "MODE / ROUTING");
+// main title removed to reclaim space for category groups
+// bottom status title removed for a cleaner status bar
+
+// Helper normalization.
+mode_norm = mode_sel / 11;
+time_norm =
+  time_mode == 0 ? (repeat_rate / 100)
+  : time_mode == 1 ? ((manual_ms - 20) / (2000 - 20))
+  : time_mode == 2 ? (sync_div / 9)
+  : ((60000 / max(1, tap_ms_tgt) - 40) / (230 - 40));
+time_norm = ui_clip01(time_norm);
+
+// Left column stack.
+left_pad = 17;
+left_inner_x = left_x + left_pad;
+left_inner_w = left_w - left_pad*2;
+left_body_y = left_y + 58;
+left_body_h = content_h - 76;
+left_gap = 12;
+mode_block_h = floor(left_body_h * 0.73);
+small_block_h = floor((left_body_h - mode_block_h - left_gap*2) / 2);
+
+cell1_y = left_body_y;
+cell1_h = mode_block_h;
+cell2_y = cell1_y + cell1_h + left_gap;
+cell2_h = small_block_h;
+cell3_y = cell2_y + cell2_h + left_gap;
+cell3_h = small_block_h;
+
+ui_cell(left_inner_x, cell1_y, left_inner_w, cell1_h, 1);
+ui_cell(left_inner_x, cell2_y, left_inner_w, cell2_h, 0);
+ui_cell(left_inner_x, cell3_y, left_inner_w, cell3_h, 0);
+
+// Mode selector block.
+mode_pad = 13;
+mode_x = left_inner_x + mode_pad;
+mode_w = left_inner_w - mode_pad*2;
+mode_y = cell1_y + mode_pad;
+mode_h = cell1_h - mode_pad*2;
+
+mode_title_h = floor(mode_h * 0.08);
+selector_zone_h = floor(mode_h * 0.56);
+position_h = floor(mode_h * 0.065);
+heads_h = mode_h - mode_title_h - selector_zone_h - position_h - 18;
+
+mode_title_y = mode_y;
+selector_zone_y = mode_title_y + mode_title_h;
+position_y = selector_zone_y + selector_zone_h + 10;
+heads_box_y = position_y + position_h + 8;
+
+selector_cx = mode_x + mode_w*0.5;
+selector_cy = selector_zone_y + selector_zone_h*0.56;
+selector_r = min(66, min(mode_w, selector_zone_h) * 0.315);
+selector_r < 42 ? selector_r = 42;
+
+gfx_setfont(5, "Arial", 14, 'b'); gfx_set(0.94, 0.95, 0.88, 1);
+ui_center_str(mode_x, mode_title_y, mode_w, mode_title_h, "MODE SELECTOR");
+
+new_mode = ui_selector_control(1, selector_cx, selector_cy, selector_r, mode_sel, 12);
+ui_set_if_changed(1, new_mode, 1);
+
+gfx_setfont(6, "Courier New", 16, 'b'); gfx_set(0.72, 0.88, 0.68, 1);
+sprintf(#ui_modepos, "POSITION %d", mode_sel + 1);
+ui_center_str(mode_x, position_y, mode_w, position_h, #ui_modepos);
+
+heads_box_x = mode_x;
+heads_box_w = mode_w;
+heads_box_h = heads_h;
+ui_cell(heads_box_x, heads_box_y, heads_box_w, heads_box_h, 0);
+
+gfx_setfont(5, "Arial", 12, 'b'); gfx_set(0.94, 0.95, 0.88, 1);
+ui_center_str(heads_box_x, heads_box_y+5, heads_box_w, 14, "HEADS / REVERB");
+
+heads_cols = heads_box_w / 4;
+heads_led_y = heads_box_y + heads_box_h*0.50;
+heads_label_y = heads_led_y + 20;
+
+head1_x = heads_box_x + heads_cols*0.50;
+head2_x = heads_box_x + heads_cols*1.50;
+head3_x = heads_box_x + heads_cols*2.50;
+head4_x = heads_box_x + heads_cols*3.50;
+
+ui_led(head1_x, heads_led_y, h1_tgt, 0.88, 0.60, 0.18);
+ui_led(head2_x, heads_led_y, h2_tgt, 0.88, 0.60, 0.18);
+ui_led(head3_x, heads_led_y, h3_tgt, 0.88, 0.60, 0.18);
+ui_led(head4_x, heads_led_y, rev_tgt, 0.34, 0.80, 0.96);
+
+gfx_setfont(5, "Arial", 10, 'b'); gfx_set(0.84, 0.88, 0.82, 1);
+ui_center_str(head1_x-24, heads_label_y, 48, 12, "H1");
+ui_center_str(head2_x-24, heads_label_y, 48, 12, "H2");
+ui_center_str(head3_x-24, heads_label_y, 48, 12, "H3");
+ui_center_str(head4_x-24, heads_label_y, 48, 12, "REV");
+
+// Reusable small left blocks.
+small_label_h = 14;
+button_h = 26;
+
+// Timing mode.
+gfx_setfont(5, "Arial", 12, 'b'); gfx_set(0.94, 0.95, 0.88, 1);
+ui_center_str(left_inner_x, cell2_y+8, left_inner_w, small_label_h, "TIMING MODE");
+tmw = 54; tmg = 8;
+tmx = left_inner_x + (left_inner_w - (tmw*4 + tmg*3))*0.5;
+tmy = floor(cell2_y + (cell2_h - button_h) * 0.58);
+i_tm = 0;
+loop(4,
+  bx_tm = tmx + i_tm * (tmw + tmg);
+  hit_tm = ui_mx >= bx_tm && ui_mx <= bx_tm + tmw && ui_my >= tmy && ui_my <= tmy + button_h;
+  i_tm == 0 ? #tm_lab = "MTR" : i_tm == 1 ? #tm_lab = "MS" : i_tm == 2 ? #tm_lab = "SYN" : #tm_lab = "TAP";
+  ui_button_text(bx_tm, tmy, tmw, button_h, time_mode == i_tm, hit_tm, 0, #tm_lab);
+  hit_tm && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(2, i_tm);
+  i_tm += 1;
+);
+
+// Input type moved to the bottom status/control bar.
+
+// Output/stereo.
+ui_center_str(left_inner_x, cell3_y+8, left_inner_w, small_label_h, "OUTPUT / STEREO");
+outw = 48; outg = 6;
+outx = left_inner_x + 18;
+outy = floor(cell3_y + (cell3_h - button_h) * 0.58);
+i_out = 0;
+loop(3,
+  bo = outx + i_out * (outw + outg);
+  hit_out = ui_mx >= bo && ui_mx <= bo + outw && ui_my >= outy && ui_my <= outy + button_h;
+  i_out == 0 ? #out_lab = "L" : i_out == 1 ? #out_lab = "M" : #out_lab = "H";
+  ui_button_text(bo, outy, outw, button_h, output_sel == i_out, hit_out, 0, #out_lab);
+  hit_out && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(16, i_out);
+  i_out += 1;
+);
+
+stx = left_inner_x + left_inner_w - 92;
+sty = outy;
+stw = 76;
+sth = button_h;
+hit_st = ui_mx >= stx && ui_mx <= stx + stw && ui_my >= sty && ui_my <= sty + sth;
+ui_button_text(stx, sty, stw, sth, 1, hit_st, 0, stereo_mode >= 0.5 ? "DUAL" : "SING");
+hit_st && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? (
+  stereo_mode >= 0.5 ? ui_apply_slider(18, 0) : ui_apply_slider(18, 1);
+);
+
+// Main grid proportional.
+main_pad = 24;
+grid_x = main_x + main_pad;
+grid_y = main_y + 52;
+grid_w = main_w - main_pad*2;
+grid_h = content_h - 72;
+cols = 8;
+rows = 3;
+gapx = 11;
+gapy = 28;
+cw = (grid_w - gapx*(cols-1)) / cols;
+ch = (grid_h - gapy*(rows-1)) / rows;
+kr = min(47, min(cw, ch) * 0.242);
+
+row0_y = grid_y;
+row1_y = grid_y + ch + gapy;
+row2_y = grid_y + (ch + gapy)*2;
+
+function ui_group_span_x(col)
+(
+  grid_x + col*(cw+gapx);
+);
+
+function ui_group_span_w(col0, col1)
+(
+  (cw*(col1-col0+1)) + gapx*(col1-col0);
+);
+
+function ui_draw_row_group(col0, col1, rowy, title)
+local(gx0, gw0, gy0, gh0)
+(
+  gx0 = ui_group_span_x(col0);
+  gw0 = ui_group_span_w(col0, col1);
+  gh0 = gapy - 8;
+  gy0 = rowy - gapy + 4;
+  ui_group_box(gx0, gy0, gw0, gh0);
+  ui_small_group_title(gx0, gy0, gw0, title);
+);
+
+function ui_grid_cell_knob(slid, col, rowy, title, norm)
+local(x, y, cx, cy, hit)
+(
+  x = grid_x + col*(cw+gapx);
+  y = rowy;
+  cx = x + cw*0.5;
+  cy = y + ch*0.59;
+  hit = ((ui_mx - cx)*(ui_mx - cx) + (ui_my - cy)*(ui_my - cy)) <= (kr+22)*(kr+22);
+
+  ui_cell(x, y, cw, ch, hit || ui_drag_id == slid);
+  gfx_setfont(5, "Arial", 11, 'b'); gfx_set(0.94, 0.95, 0.88, 1);
+  ui_center_str(x+4, y+22, cw-8, 16, title);
+
+  norm = ui_knob_control(slid, cx, cy, kr, norm);
+  norm;
+);
+
+function ui_grid_value_num(slid, col, rowy, val, digits, unit_type)
+local(x, y, vx, vy, vw, vh)
+(
+  x = grid_x + col*(cw+gapx);
+  y = rowy;
+  vx = x+4;
+  vy = y+ch-23;
+  vw = cw-8;
+  vh = 18;
+
+  ui_try_click_value(slid, vx, vy, vw, vh, val, digits);
+  ui_format_value_string(val, digits, unit_type);
+
+  gfx_setfont(6, "Courier New", 12, 'b');
+  gfx_set(ui_edit_slid == slid ? 0.98 : 0.72, ui_edit_slid == slid ? 0.98 : 0.88, ui_edit_slid == slid ? 0.88 : 0.68, 1);
+  ui_center_str(vx, vy, vw, vh, #ui_value_str);
+);
+
+function ui_grid_value_str(slid, col, rowy, str, edit_val, digits)
+local(x, y, vx, vy, vw, vh)
+(
+  x = grid_x + col*(cw+gapx);
+  y = rowy;
+  vx = x+4;
+  vy = y+ch-23;
+  vw = cw-8;
+  vh = 18;
+
+  ui_try_click_value(slid, vx, vy, vw, vh, edit_val, digits);
+
+  gfx_setfont(6, "Courier New", 12, 'b');
+  gfx_set(ui_edit_slid == slid ? 0.98 : 0.72, ui_edit_slid == slid ? 0.98 : 0.88, ui_edit_slid == slid ? 0.88 : 0.68, 1);
+  ui_center_str(vx, vy, vw, vh, str);
+);
+
+// Category headers.
+ui_draw_row_group(0, 3, row0_y, "ECHO / MIX");
+ui_draw_row_group(4, 7, row0_y, "TAPE TONE");
+
+ui_draw_row_group(0, 1, row1_y, "INPUT STAGE");
+ui_draw_row_group(2, 5, row1_y, "MOTOR / WOW-FLUTTER");
+ui_draw_row_group(6, 7, row1_y, "FILTERS");
+
+ui_draw_row_group(0, 4, row2_y, "SPRING TANK");
+ui_draw_row_group(5, 7, row2_y, "REVERB SHAPE");
+
+// Row 1.
+n = ui_grid_cell_knob(3, 0, row0_y, "TIME", time_norm);
+time_mode == 0 ? ui_set_if_changed(3, n * 100, 1)
+: time_mode == 1 ? ui_set_if_changed(4, 20 + n * (2000 - 20), 1)
+: time_mode == 2 ? ui_set_if_changed(5, n * 9, 1)
+: ( tap_ms_tgt = 60000 / max(40, min(230, 40 + n * (230 - 40))) );
+
+time_mode == 0 ? sprintf(#time_val, "%d%%", repeat_rate)
+: time_mode == 1 ? sprintf(#time_val, "%d ms", manual_ms)
+: time_mode == 2 ? (
+  sync_div == 0 ? #time_val = "2/1"
+  : sync_div == 1 ? #time_val = "1/1"
+  : sync_div == 2 ? #time_val = "1/2"
+  : sync_div == 3 ? #time_val = "1/4"
+  : sync_div == 4 ? #time_val = "1/4T"
+  : sync_div == 5 ? #time_val = "1/8"
+  : sync_div == 6 ? #time_val = "1/8T"
+  : sync_div == 7 ? #time_val = "1/16"
+  : sync_div == 8 ? #time_val = "1/16T"
+  : #time_val = "1/32";
+)
+: sprintf(#time_val, "%.1f BPM", 60000 / max(1, tap_ms_tgt));
+time_edit_slid = time_mode == 0 ? 3 : time_mode == 1 ? 4 : time_mode == 3 ? 1003 : 0;
+time_edit_val = time_mode == 0 ? repeat_rate : time_mode == 1 ? manual_ms : time_mode == 3 ? (60000 / max(1, tap_ms_tgt)) : 0;
+time_edit_digits = time_mode == 3 ? 1 : 0;
+ui_grid_value_str(time_edit_slid, 0, row0_y, #time_val, time_edit_val, time_edit_digits);
+
+n = ui_grid_cell_knob(7, 1, row0_y, "INTENSITY", intensity / 110); ui_set_if_changed(7, n * 110, 1); ui_grid_value_num(7, 1, row0_y, intensity, 0, 1);
+n = ui_grid_cell_knob(8, 2, row0_y, "ECHO VOL", echo_vol / 100); ui_set_if_changed(8, n * 100, 1); ui_grid_value_num(8, 2, row0_y, echo_vol, 0, 1);
+n = ui_grid_cell_knob(9, 3, row0_y, "REVERB", reverb_vol / 100); ui_set_if_changed(9, n * 100, 1); ui_grid_value_num(9, 3, row0_y, reverb_vol, 0, 1);
+n = ui_grid_cell_knob(10, 4, row0_y, "BASS", (bass_db + 12) / 24); ui_set_if_changed(10, -12 + n * 24, 0.1); ui_grid_value_num(10, 4, row0_y, bass_db, 1, 2);
+n = ui_grid_cell_knob(11, 5, row0_y, "TREBLE", (treble_db + 12) / 24); ui_set_if_changed(11, -12 + n * 24, 0.1); ui_grid_value_num(11, 5, row0_y, treble_db, 1, 2);
+n = ui_grid_cell_knob(27, 6, row0_y, "DRIVE", drive_amt / 100); ui_set_if_changed(27, n * 100, 1); ui_grid_value_num(27, 6, row0_y, drive_amt, 0, 1);
+n = ui_grid_cell_knob(28, 7, row0_y, "NOISE", noise_amt / 100); ui_set_if_changed(28, n * 100, 1); ui_grid_value_num(28, 7, row0_y, noise_amt, 0, 1);
+
+// Row 2: reordered / categorized.
+n = ui_grid_cell_knob(13, 0, row1_y, "INPUT LVL", (input_db + 24) / 42); ui_set_if_changed(13, -24 + n * 42, 0.1); ui_grid_value_num(13, 0, row1_y, input_db, 1, 2);
+n = ui_grid_cell_knob(17, 1, row1_y, "MASTER", (master_db + 24) / 36); ui_set_if_changed(17, -24 + n * 36, 0.1); ui_grid_value_num(17, 1, row1_y, master_db, 1, 2);
+
+n = ui_grid_cell_knob(19, 2, row1_y, "CONDITION", (condition + 100) / 200); ui_set_if_changed(19, -100 + n * 200, 1); ui_grid_value_num(19, 2, row1_y, condition, 0, 1);
+n = ui_grid_cell_knob(21, 3, row1_y, "TORQUE", (motor_torque + 100) / 200); ui_set_if_changed(21, -100 + n * 200, 1); ui_grid_value_num(21, 3, row1_y, motor_torque, 0, 1);
+n = ui_grid_cell_knob(20, 4, row1_y, "W/F", (wf_amt + 100) / 200); ui_set_if_changed(20, -100 + n * 200, 1); ui_grid_value_num(20, 4, row1_y, wf_amt, 0, 1);
+n = ui_grid_cell_knob(26, 5, row1_y, "LFO DEPTH", lfo_depth / 100); ui_set_if_changed(26, n * 100, 1); ui_grid_value_num(26, 5, row1_y, lfo_depth, 0, 1);
+
+n = ui_grid_cell_knob(22, 6, row1_y, "LOW CUT", (low_cut + 100) / 200); ui_set_if_changed(22, -100 + n * 200, 1); ui_grid_value_num(22, 6, row1_y, low_cut, 0, 1);
+n = ui_grid_cell_knob(23, 7, row1_y, "HIGH CUT", (high_cut + 100) / 200); ui_set_if_changed(23, -100 + n * 200, 1); ui_grid_value_num(23, 7, row1_y, high_cut, 0, 1);
+
+// Row 3.
+n = ui_grid_cell_knob(36, 0, row2_y, "DWELL", spring_dwell / 100); ui_set_if_changed(36, n * 100, 1); ui_grid_value_num(36, 0, row2_y, spring_dwell, 0, 1);
+n = ui_grid_cell_knob(37, 1, row2_y, "DECAY", spring_decay / 100); ui_set_if_changed(37, n * 100, 1); ui_grid_value_num(37, 1, row2_y, spring_decay, 0, 1);
+n = ui_grid_cell_knob(38, 2, row2_y, "DRIP", spring_drip / 100); ui_set_if_changed(38, n * 100, 1); ui_grid_value_num(38, 2, row2_y, spring_drip, 0, 1);
+n = ui_grid_cell_knob(39, 3, row2_y, "BOUNCE", spring_bounce / 100); ui_set_if_changed(39, n * 100, 1); ui_grid_value_num(39, 3, row2_y, spring_bounce, 0, 1);
+n = ui_grid_cell_knob(40, 4, row2_y, "GRAIN", spring_grain / 100); ui_set_if_changed(40, n * 100, 1); ui_grid_value_num(40, 4, row2_y, spring_grain, 0, 1);
+n = ui_grid_cell_knob(32, 5, row2_y, "REV BASS", (rev_bass_db + 12) / 24); ui_set_if_changed(32, -12 + n * 24, 0.1); ui_grid_value_num(32, 5, row2_y, rev_bass_db, 1, 2);
+n = ui_grid_cell_knob(33, 6, row2_y, "REV TREB", (rev_treble_db + 12) / 24); ui_set_if_changed(33, -12 + n * 24, 0.1); ui_grid_value_num(33, 6, row2_y, rev_treble_db, 1, 2);
+n = ui_grid_cell_knob(24, 7, row2_y, "LFO RATE", (lfo_rate - 0.05) / (12 - 0.05)); ui_set_if_changed(24, 0.05 + n * (12 - 0.05), 0.01); ui_grid_value_num(24, 7, row2_y, lfo_rate, 2, 3);
+
+// Bottom bar: centered controls, clearer status texts.
+group_gap = 10;
+input_w = 180;
+loop_w = 150;
+formula_w = 170;
+age_w = 140;
+wave_w = 236;
+inst_w = 154;
+cancel_w = 154;
+transport_w = 136;
+group_total_w = input_w + loop_w + formula_w + age_w + wave_w + inst_w + cancel_w + transport_w + group_gap*7;
+
+group_x = status_x + (status_w - group_total_w) * 0.5;
+group_y = status_y + 24;
+group_h = 46;
+label_y = status_y + 10;
+
+input_cell_x = group_x;
+loop_cell_x = input_cell_x + input_w + group_gap;
+form_cell_x = loop_cell_x + loop_w + group_gap;
+age_cell_x = form_cell_x + formula_w + group_gap;
+wave_cell_x = age_cell_x + age_w + group_gap;
+inst_cell_x = wave_cell_x + wave_w + group_gap;
+cancel_cell_x = inst_cell_x + inst_w + group_gap;
+transport_x = cancel_cell_x + cancel_w + group_gap;
+
+ui_cell(input_cell_x, group_y, input_w, group_h, 0);
+ui_cell(loop_cell_x, group_y, loop_w, group_h, 0);
+ui_cell(form_cell_x, group_y, formula_w, group_h, 0);
+ui_cell(age_cell_x, group_y, age_w, group_h, 0);
+ui_cell(wave_cell_x, group_y, wave_w, group_h, 0);
+ui_cell(inst_cell_x, group_y, inst_w, group_h, 0);
+ui_cell(cancel_cell_x, group_y, cancel_w, group_h, echo_cancel >= 0.5);
+ui_cell(transport_x, group_y, transport_w, group_h, 0);
+ui_separator(loop_cell_x - group_gap*0.5, group_y+5, group_h-10);
+ui_separator(form_cell_x - group_gap*0.5, group_y+5, group_h-10);
+ui_separator(age_cell_x - group_gap*0.5, group_y+5, group_h-10);
+ui_separator(wave_cell_x - group_gap*0.5, group_y+5, group_h-10);
+ui_separator(inst_cell_x - group_gap*0.5, group_y+5, group_h-10);
+ui_separator(cancel_cell_x - group_gap*0.5, group_y+5, group_h-10);
+ui_separator(transport_x - group_gap*0.5, group_y+5, group_h-10);
+
+gfx_setfont(5, "Arial", 11, 'b'); gfx_set(0.95, 0.97, 0.92, 1);
+ui_center_str(input_cell_x, label_y, input_w, 14, "INPUT");
+ui_center_str(loop_cell_x, label_y, loop_w, 14, "LOOP");
+ui_center_str(form_cell_x, label_y, formula_w, 14, "TAPE FORMULA");
+ui_center_str(age_cell_x, label_y, age_w, 14, "TAPE AGE");
+ui_center_str(wave_cell_x, label_y, wave_w, 14, "LFO WAVE");
+ui_center_str(inst_cell_x, label_y, inst_w, 14, "INST SWITCH");
+ui_center_str(cancel_cell_x, label_y, cancel_w, 14, "ECHO CANCEL");
+ui_center_str(transport_x, label_y, transport_w, 14, "TRANSPORT");
+
+// Buttons inside bottom cells.
+btnh = 32;
+btny = group_y + 7;
+
+// Input.
+inw = 50; ing = 6;
+inx = input_cell_x + (input_w - (inw*3 + ing*2))*0.5;
+i_in = 0;
+loop(3,
+  bi = inx + i_in * (inw + ing);
+  hit_in = ui_mx >= bi && ui_mx <= bi + inw && ui_my >= btny && ui_my <= btny + btnh;
+  i_in == 0 ? #in_lab = "INST" : i_in == 1 ? #in_lab = "P.A." : #in_lab = "MIC";
+  ui_button_text(bi, btny, inw, btnh, input_type == i_in, hit_in, 0, #in_lab);
+  hit_in && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(12, i_in);
+  i_in += 1;
+);
+
+// Loop.
+btnw = 46; btng = 4;
+btnx = loop_cell_x + (loop_w - (btnw*3 + btng*2))*0.5;
+i_loop = 0;
+loop(3,
+  bl = btnx + i_loop*(btnw+btng);
+  hit_loop = ui_mx >= bl && ui_mx <= bl + btnw && ui_my >= btny && ui_my <= btny + btnh;
+  i_loop == 0 ? #loop_lab = "36" : i_loop == 1 ? #loop_lab = "72" : #loop_lab = "120";
+  ui_button_text(bl, btny, btnw, btnh, tape_loop_size == i_loop, hit_loop, 0, #loop_lab);
+  hit_loop && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(31, i_loop);
+  i_loop += 1;
+);
+
+// Formula.
+fbw = 80; fbg = 6;
+fbx = form_cell_x + (formula_w - (fbw*2 + fbg))*0.5;
+hit_f0 = ui_mx >= fbx && ui_mx <= fbx+fbw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(fbx, btny, fbw, btnh, tape_formula == 0, hit_f0, 0, "AMPEX");
+hit_f0 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(29, 0);
+hit_f1 = ui_mx >= fbx+fbw+fbg && ui_mx <= fbx+fbw+fbg+fbw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(fbx+fbw+fbg, btny, fbw, btnh, tape_formula == 1, hit_f1, 0, "3M");
+hit_f1 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(29, 1);
+
+// Age.
+abw = 64; abg = 6;
+abx = age_cell_x + (age_w - (abw*2 + abg))*0.5;
+hit_a0 = ui_mx >= abx && ui_mx <= abx+abw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(abx, btny, abw, btnh, tape_age == 0, hit_a0, 0, "NEW");
+hit_a0 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(30, 0);
+hit_a1 = ui_mx >= abx+abw+abg && ui_mx <= abx+abw+abg+abw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(abx+abw+abg, btny, abw, btnh, tape_age == 1, hit_a1, 0, "OLD");
+hit_a1 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(30, 1);
+
+// LFO wave.
+wbw = 42; wbg = 4;
+wbx = wave_cell_x + (wave_w - (wbw*5 + wbg*4))*0.5;
+i_wave = 0;
+loop(5,
+  bwv = wbx + i_wave*(wbw+wbg);
+  hit_wave = ui_mx >= bwv && ui_mx <= bwv + wbw && ui_my >= btny && ui_my <= btny + btnh;
+  i_wave == 0 ? #wave_lab = "SIN"
+  : i_wave == 1 ? #wave_lab = "TRI"
+  : i_wave == 2 ? #wave_lab = "RMP"
+  : i_wave == 3 ? #wave_lab = "SQR"
+  : #wave_lab = "RND";
+  ui_button_text(bwv, btny, wbw, btnh, lfo_wave == i_wave, hit_wave, 0, #wave_lab);
+  hit_wave && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(25, i_wave);
+  i_wave += 1;
+);
+
+// Inst switch.
+isw = 68; isg = 6;
+isx = inst_cell_x + (inst_w - (isw*2 + isg))*0.5;
+hit_ie0 = ui_mx >= isx && ui_mx <= isx+isw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(isx, btny, isw, btnh, inst_echo == 0, hit_ie0, 0, "ECHO");
+hit_ie0 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(14, 0);
+hit_ie1 = ui_mx >= isx+isw+isg && ui_mx <= isx+isw+isg+isw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(isx+isw+isg, btny, isw, btnh, inst_echo == 1, hit_ie1, 0, "DRY");
+hit_ie1 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(14, 1);
+
+// Echo cancel.
+csw = 70; csg = 6;
+csx = cancel_cell_x + (cancel_w - (csw*2 + csg))*0.5;
+hit_c0 = ui_mx >= csx && ui_mx <= csx+csw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(csx, btny, csw, btnh, echo_cancel == 0, hit_c0, 0, "FX ON");
+hit_c0 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(15, 0);
+hit_c1 = ui_mx >= csx+csw+csg && ui_mx <= csx+csw+csg+csw && ui_my >= btny && ui_my <= btny+btnh;
+ui_button_text(csx+csw+csg, btny, csw, btnh, echo_cancel == 1, hit_c1, 1, "CUT");
+hit_c1 && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? ui_apply_slider(15, 1);
+
+// Transport.
+tbw = 62; tbg = 4;
+tbx = transport_x + (transport_w - (tbw*2 + tbg))*0.5;
+tap_ui_active = time_mode == 3;
+tap_hit = ui_mx >= tbx && ui_mx <= tbx + tbw && ui_my >= btny && ui_my <= btny + btnh;
+ui_button_text(tbx, btny, tbw, btnh, tap_ui_active, tap_hit, 0, "TAP");
+tap_ui_active && tap_hit && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? tap_event += 1;
+clr_hit = ui_mx >= tbx+tbw+tbg && ui_mx <= tbx+tbw+tbg+tbw && ui_my >= btny && ui_my <= btny + btnh;
+ui_button_text(tbx+tbw+tbg, btny, tbw, btnh, 1, clr_hit, 1, "CLEAR");
+clr_hit && ui_edit_slid <= 0 && mouse_down && !mouse_down_last ? clear_event += 1;
+
+// Status text centered and more visible.
+ui_display_window(status_x + 420, status_y+78, status_w - 840, 28);
+gfx_setfont(6, "Courier New", 15, 'b');
+gfx_set(0.72, 0.96, 0.68, 1);
+sprintf(#status_line_1, "IPS %.3f  |  H1 %.1f ms  |  H2 %.1f ms  |  H3 %.1f ms", tape_speed_ips_s, h1_ms, h2_ms, h3_ms);
+ui_center_str(status_x, status_y+82, status_w, 18, #status_line_1);
+
+timing_clamped ? (
+  gfx_set(1.0, 0.64, 0.26, 1);
+  memory_limited ? #status_line_2 = "STATUS: TIME CLAMPED BY MEMORY"
+                 : #status_line_2 = "STATUS: SPEED CLAMPED FOR SAFETY";
+) : loop_capped ? (
+  gfx_set(1.0, 0.64, 0.26, 1);
+  #status_line_2 = "STATUS: LOOP CAPPED BY JSFX MEMORY";
+) : (
+  gfx_set(0.90, 0.94, 0.88, 1);
+  ui_mode >= 0.5 ? #status_line_2 = "NATIVE CONTROLS VISIBLE"
+                 : #status_line_2 = "";
+);
+ui_center_str(status_x, status_y+100, status_w, 14, #status_line_2);
+
+ui_draw_edit_box();
+
+// Present scaled panel.
+gfx_dest = -1;
+gfx_set(0.035, 0.055, 0.035, 1);
+gfx_rect(0, 0, gfx_w, gfx_h, 1);
+gfx_set(1, 1, 1, 1);
+gfx_blit(0, 1, 0, 0, 0, ui_base_w, ui_base_h, ui_ox, ui_oy, ui_draw_w, ui_draw_h);
+
+mouse_down_last = mouse_down;

@@ -1,0 +1,6 @@
+Place your exported PNG screenshot here.
+
+Expected file name:
+screenshot-header.png
+
+Referenced by README/docs.
