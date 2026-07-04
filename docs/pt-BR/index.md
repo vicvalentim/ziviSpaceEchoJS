@@ -22,7 +22,7 @@
     </div>
   </div>
   <div class="zivi-hero-img">
-    <img src="../assets/images/screenshot-main.png" alt="Interface principal do ziviSpaceEcho">
+    <img src="https://vicvalentim.github.io/ziviSpaceEchoJS/assets/images/screenshot-main.png" alt="Interface principal do ziviSpaceEcho">
   </div>
 </div>
 
@@ -50,15 +50,15 @@ O plugin combina um modelo de echo de fita com múltiplas cabeças, uma ramifica
 
 <div class="zivi-gallery-grid">
   <div class="zivi-gallery-card">
-    <img src="../assets/images/screenshot-mode-selector.png" alt="Detalhe do seletor de modo">
+    <img src="https://vicvalentim.github.io/ziviSpaceEchoJS/assets/images/screenshot-mode-selector.png" alt="Detalhe do seletor de modo">
     <p><strong>Seletor de modo</strong><br>12 posições combinando H1, H2, H3 e reverb de mola.</p>
   </div>
   <div class="zivi-gallery-card">
-    <img src="../assets/images/screenshot-editor.png" alt="Editor por mouse">
+    <img src="https://vicvalentim.github.io/ziviSpaceEchoJS/assets/images/screenshot-editor.png" alt="Editor por mouse">
     <p><strong>Editor por mouse</strong><br>Editor numérico na tela com aplicar, cancelar, padrão, apagar e limpar.</p>
   </div>
   <div class="zivi-gallery-card">
-    <img src="../assets/images/screenshot-bottom-bar.png" alt="Barra inferior">
+    <img src="https://vicvalentim.github.io/ziviSpaceEchoJS/assets/images/screenshot-bottom-bar.png" alt="Barra inferior">
     <p><strong>Barra inferior</strong><br>Entrada, loop, fórmula de fita, idade, LFO, chaves e status de transporte.</p>
   </div>
 </div>

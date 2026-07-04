@@ -1,7 +1,7 @@
 # ziviSpaceEcho Complete Manual
 
 <figure class="zivi-figure">
-  <img src="../assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
+  <img src="https://vicvalentim.github.io/ziviSpaceEchoJS/assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
 </figure>
 
 ## 1. Concept
