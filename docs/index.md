@@ -1,5 +1,3 @@
-# ziviSpaceEcho
-
 <div class="zivi-hero">
   <div class="zivi-hero-text">
     <h1>ziviSpaceEcho</h1>
