@@ -68,47 +68,62 @@ plugins:
           name: English
           default: true
           build: true
+          nav_translations:
+            Home: Home
+            Concept: Concept
+            Download: Download
+            Installation: Installation
+            Manual: Manual
+            Overview: Overview
+            Parameter Reference: Parameter Reference
+            Sound Design Guide: Sound Design Guide
+            Gallery: Gallery
+            Demos: Demos
+            Technical: Technical
+            Developer Notes: Developer Notes
+            Use of Generative AI: Use of Generative AI
+            Changelog: Changelog
+            License: License
         - locale: pt-BR
           name: Português (BR)
           build: true
           site_name: ziviSpaceEcho
+          nav_translations:
+            Home: Início
+            Concept: Conceito
+            Download: Download
+            Installation: Instalação
+            Manual: Manual
+            Overview: Visão geral
+            Parameter Reference: Referência de parâmetros
+            Sound Design Guide: Guia de desenho sonoro
+            Gallery: Galeria
+            Demos: Demos
+            Technical: Técnico
+            Developer Notes: Notas de desenvolvimento
+            Use of Generative AI: Uso de IA generativa
+            Changelog: Registro de mudanças
+            License: Licença
         - locale: es
           name: Español
           build: true
           site_name: ziviSpaceEcho
-      nav_translations:
-        pt-BR:
-          Home: Início
-          Concept: Conceito
-          Download: Download
-          Installation: Instalação
-          Manual: Manual
-          Overview: Visão geral
-          Parameter Reference: Referência de parâmetros
-          Sound Design Guide: Guia de desenho sonoro
-          Gallery: Galeria
-          Demos: Demos
-          Technical: Técnico
-          Developer Notes: Notas de desenvolvimento
-          Use of Generative AI: Uso de IA generativa
-          Changelog: Registro de mudanças
-          License: Licença
-        es:
-          Home: Inicio
-          Concept: Concepto
-          Download: Descarga
-          Installation: Instalación
-          Manual: Manual
-          Overview: Panorama general
-          Parameter Reference: Referencia de parámetros
-          Sound Design Guide: Guía de diseño sonoro
-          Gallery: Galería
-          Demos: Demos
-          Technical: Técnico
-          Developer Notes: Notas de desarrollo
-          Use of Generative AI: Uso de IA generativa
-          Changelog: Registro de cambios
-          License: Licencia
+          nav_translations:
+            Home: Inicio
+            Concept: Concepto
+            Download: Descarga
+            Installation: Instalación
+            Manual: Manual
+            Overview: Panorama general
+            Parameter Reference: Referencia de parámetros
+            Sound Design Guide: Guía de diseño sonoro
+            Gallery: Galería
+            Demos: Demos
+            Technical: Técnico
+            Developer Notes: Notas de desarrollo
+            Use of Generative AI: Uso de IA generativa
+            Changelog: Registro de cambios
+            License: Licencia
 
 markdown_extensions:
   - admonition
