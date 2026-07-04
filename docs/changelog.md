@@ -1,5 +1,20 @@
 # Changelog
 
+## v7.6.3
+
+### Added
+
+- Added Zenodo DOI archiving for the GitHub repository.
+- Added `CITATION.cff` with formal software citation metadata.
+- Added `.zenodo.json` for Zenodo release metadata.
+- Added DOI badge and citation information to `README.md`.
+
+### Preserved
+
+- DSP unchanged from v7.6.2.
+- Plugin display name remains **ziviSpaceEcho**.
+- Repository name remains **ziviSpaceEchoJS**.
+
 ## v7.6.2
 
 ### Changed
