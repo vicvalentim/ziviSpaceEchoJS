@@ -60,7 +60,7 @@ After loading the plugin, confirm:
 - the mouse-only editor opens when clicking numeric values.
 
 <figure class="zivi-figure">
-  <img src="assets/images/screenshot-reaper-track.png" alt="ziviSpaceEcho loaded in REAPER">
+  <img src="../assets/images/screenshot-reaper-track.png" alt="ziviSpaceEcho loaded in REAPER">
   <figcaption>Example of ziviSpaceEcho loaded in a REAPER track context.</figcaption>
 </figure>
 
