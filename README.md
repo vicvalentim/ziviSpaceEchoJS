@@ -153,7 +153,6 @@ See [AI_USAGE.md](AI_USAGE.md) for the full declaration.
 src/
   ziviSpaceEcho.jsfx
   ziviSpaceEcho_v7_6_4.jsfx
-  SpaceEcho_RE201_STABLE.jsfx
 
 docs/
   MkDocs Material documentation source
