@@ -1,17 +1,18 @@
 <div class="zivi-hero">
   <div class="zivi-hero-text">
+    <p class="zivi-kicker">REAPER / JSFX · Tape echo · Spring reverb</p>
     <h1>ziviSpaceEcho</h1>
     <p class="zivi-subtitle"><strong>RE-201 inspired tape echo + spring reverb for REAPER / JSFX.</strong></p>
-    <p>
+    <p class="zivi-lede">
       A musical tape-delay instrument for dub echoes, unstable motor textures,
       spring ambience and hands-on cabinet-style performance.
     </p>
-    <div>
+    <div class="zivi-meta">
       <span class="zivi-badge">REAPER</span>
       <span class="zivi-badge">JSFX</span>
       <span class="zivi-badge">Tape Echo</span>
       <span class="zivi-badge">Spring Reverb</span>
-      <span class="zivi-badge">Mouse-only Editor</span>
+      <span class="zivi-badge cyan">Mouse-only Editor</span>
     </div>
     <div class="zivi-button-row">
       <a class="zivi-button" href="download/">Download JSFX</a>

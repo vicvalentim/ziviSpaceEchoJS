@@ -1,144 +1,320 @@
+
+/* ziviSpaceEcho documentation theme
+   Professional light/dark palette for MkDocs Material.
+*/
+
 :root {
-  --zivi-green-900: #07110a;
-  --zivi-green-800: #102516;
-  --zivi-green-700: #17351d;
-  --zivi-cream: #f3e8bd;
-  --zivi-muted: #c7d0a6;
-  --zivi-amber: #e7b64a;
-  --zivi-cyan: #59c7e6;
+  --zivi-dark-950: #041008;
+  --zivi-dark-900: #07170d;
+  --zivi-dark-850: #0a2112;
+  --zivi-green-800: #12351f;
+  --zivi-green-700: #19502d;
+  --zivi-green-600: #23703f;
+  --zivi-green-500: #2e8b50;
+  --zivi-gold-500: #e6b44b;
+  --zivi-gold-600: #c8902f;
+  --zivi-cyan-400: #6cd3e6;
+  --zivi-cyan-600: #247f98;
+  --zivi-cream-100: #fff9df;
+  --zivi-cream-200: #f7eeca;
+  --zivi-paper-100: #faf6e7;
+  --zivi-paper-200: #f0e8cf;
+  --zivi-ink-900: #142018;
+  --zivi-ink-700: #35483a;
+  --zivi-shadow: 0 18px 52px rgba(0, 0, 0, 0.28);
+  --zivi-radius-xl: 22px;
+  --zivi-radius-lg: 16px;
 }
 
+/* Material palette integration */
 [data-md-color-scheme="slate"] {
-  --md-default-bg-color: #07110a;
-  --md-default-fg-color: #f3e8bd;
-  --md-default-fg-color--light: #c7d0a6;
-  --md-primary-fg-color: #17351d;
-  --md-accent-fg-color: #e7b64a;
-  --md-code-bg-color: #0d1e12;
+  --md-default-bg-color: var(--zivi-dark-950);
+  --md-default-bg-color--light: var(--zivi-dark-900);
+  --md-default-fg-color: var(--zivi-cream-200);
+  --md-default-fg-color--light: #d7d8bd;
+  --md-default-fg-color--lighter: #b7bea2;
+  --md-primary-fg-color: var(--zivi-dark-900);
+  --md-primary-bg-color: var(--zivi-cream-200);
+  --md-accent-fg-color: var(--zivi-gold-500);
+  --md-code-bg-color: #0b2113;
+  --md-code-fg-color: #f9f1d5;
+  --md-typeset-a-color: #7ed8ec;
+  --md-footer-bg-color: #06140b;
+  --md-footer-bg-color--dark: #040d07;
+}
+
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: var(--zivi-paper-100);
+  --md-default-fg-color: var(--zivi-ink-900);
+  --md-default-fg-color--light: var(--zivi-ink-700);
+  --md-default-fg-color--lighter: #617064;
+  --md-primary-fg-color: var(--zivi-green-800);
+  --md-primary-bg-color: var(--zivi-cream-100);
+  --md-accent-fg-color: #9a6a19;
+  --md-code-bg-color: #eee4ca;
+  --md-code-fg-color: #15271a;
+  --md-typeset-a-color: #146782;
+  --md-footer-bg-color: #102718;
+  --md-footer-bg-color--dark: #07150c;
 }
 
 .md-header,
 .md-tabs {
   background:
-    radial-gradient(circle at 15% 15%, rgba(231,182,74,0.18), transparent 24%),
-    linear-gradient(135deg, #07110a 0%, #17351d 58%, #07110a 100%);
+    radial-gradient(circle at 12% 20%, rgba(230, 180, 75, 0.22), transparent 22%),
+    radial-gradient(circle at 82% 0%, rgba(108, 211, 230, 0.14), transparent 25%),
+    linear-gradient(135deg, #041008 0%, #12351f 58%, #06150b 100%);
+  border-bottom: 1px solid rgba(230,180,75,.22);
 }
 
 .md-header__title {
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 900;
+  letter-spacing: -0.025em;
 }
 
+.md-logo img,
+.md-logo svg {
+  filter: drop-shadow(0 0 10px rgba(230,180,75,.36));
+}
+
+/* Layout helpers */
 .zivi-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
-  gap: 1.6rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  gap: clamp(1rem, 2.5vw, 2rem);
   align-items: center;
-  margin: 1rem 0 2rem;
+  margin: 1rem 0 2.2rem;
 }
 
 .zivi-hero-text h1 {
-  margin-bottom: 0.3rem;
-  font-size: clamp(2.2rem, 6vw, 4.2rem);
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  margin: 0 0 .35rem;
+  font-size: clamp(2.35rem, 6vw, 4.8rem);
+  line-height: .92;
+  letter-spacing: -.06em;
+  font-weight: 950;
 }
 
 .zivi-subtitle {
-  font-size: 1.15rem;
-  color: var(--zivi-muted);
-  margin: 0.4rem 0 1rem;
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  margin: .45rem 0 1rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.zivi-lede {
+  font-size: 1.05rem;
+  max-width: 66ch;
 }
 
 .zivi-hero-img,
 .zivi-card,
 .zivi-gallery-card,
-.zivi-callout {
-  border: 1px solid rgba(231, 182, 74, 0.32);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(23,53,29,0.88), rgba(7,17,10,0.92));
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32);
+.zivi-callout,
+.zivi-panel,
+.zivi-doi-card {
+  border: 1px solid rgba(230, 180, 75, .28);
+  border-radius: var(--zivi-radius-xl);
+  box-shadow: var(--zivi-shadow);
+}
+
+[data-md-color-scheme="slate"] .zivi-hero-img,
+[data-md-color-scheme="slate"] .zivi-card,
+[data-md-color-scheme="slate"] .zivi-gallery-card,
+[data-md-color-scheme="slate"] .zivi-callout,
+[data-md-color-scheme="slate"] .zivi-panel,
+[data-md-color-scheme="slate"] .zivi-doi-card {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(230,180,75,.10), transparent 28%),
+    linear-gradient(180deg, rgba(22,58,34,.92), rgba(5,17,9,.96));
+}
+
+[data-md-color-scheme="default"] .zivi-hero-img,
+[data-md-color-scheme="default"] .zivi-card,
+[data-md-color-scheme="default"] .zivi-gallery-card,
+[data-md-color-scheme="default"] .zivi-callout,
+[data-md-color-scheme="default"] .zivi-panel,
+[data-md-color-scheme="default"] .zivi-doi-card {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(230,180,75,.18), transparent 28%),
+    linear-gradient(180deg, #fffaf0, #f1e7ce);
 }
 
 .zivi-hero-img {
-  padding: 0.85rem;
+  padding: .85rem;
 }
 
 .zivi-hero-img img,
 .zivi-gallery-card img,
+.zivi-figure img,
 .md-content img {
   max-width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(231, 182, 74, 0.20);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+  border-radius: var(--zivi-radius-lg);
+  border: 1px solid rgba(230, 180, 75, .22);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .26);
 }
 
 .zivi-button-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.72rem;
+  gap: .72rem;
   margin: 1.15rem 0;
 }
 
-.zivi-button {
+.zivi-button,
+.md-typeset .zivi-button {
   display: inline-block;
-  padding: 0.72rem 1.05rem;
+  padding: .72rem 1.05rem;
   border-radius: 999px;
-  background: linear-gradient(180deg, #e9c05c 0%, #c9922c 100%);
+  background: linear-gradient(180deg, #f1c968 0%, #c78e2a 100%);
   color: #07110a !important;
-  font-weight: 800;
+  font-weight: 900;
   text-decoration: none;
-  border: 1px solid rgba(78, 45, 8, 0.35);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.20);
+  border: 1px solid rgba(78, 45, 8, .35);
+  box-shadow: 0 10px 20px rgba(0,0,0,.20);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.zivi-button:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08);
+  box-shadow: 0 14px 26px rgba(0,0,0,.25);
 }
 
 .zivi-button.secondary {
-  background: linear-gradient(180deg, #214f2a 0%, #123119 100%);
-  color: var(--zivi-cream) !important;
-  border-color: rgba(231, 182, 74, 0.35);
+  background: linear-gradient(180deg, #22613a 0%, #123119 100%);
+  color: var(--zivi-cream-200) !important;
+  border-color: rgba(230, 180, 75, .35);
 }
 
 .zivi-button.info {
-  background: linear-gradient(180deg, #6fd3ea 0%, #2c879d 100%);
+  background: linear-gradient(180deg, #83ddeb 0%, #2c879d 100%);
   color: #061014 !important;
 }
 
 .zivi-feature-grid,
-.zivi-gallery-grid {
+.zivi-gallery-grid,
+.zivi-spec-grid,
+.zivi-language-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
   gap: 1rem;
-  margin: 1.2rem 0;
+  margin: 1.25rem 0;
 }
 
 .zivi-card,
 .zivi-gallery-card,
-.zivi-callout {
+.zivi-callout,
+.zivi-panel,
+.zivi-doi-card {
   padding: 1rem;
 }
 
 .zivi-card strong,
-.zivi-gallery-card strong {
-  color: var(--zivi-amber);
+.zivi-gallery-card strong,
+.zivi-panel strong {
+  color: var(--zivi-gold-500);
+}
+
+[data-md-color-scheme="default"] .zivi-card strong,
+[data-md-color-scheme="default"] .zivi-gallery-card strong,
+[data-md-color-scheme="default"] .zivi-panel strong {
+  color: #8a5e15;
 }
 
 .zivi-badge {
   display: inline-block;
   border-radius: 999px;
-  padding: 0.25rem 0.62rem;
-  margin: 0.15rem 0.2rem 0.15rem 0;
-  font-size: 0.78rem;
-  font-weight: 800;
-  background: rgba(231,182,74,0.15);
-  color: var(--zivi-cream);
-  border: 1px solid rgba(231,182,74,0.30);
+  padding: .25rem .64rem;
+  margin: .15rem .2rem .15rem 0;
+  font-size: .76rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  background: rgba(230,180,75,.16);
+  color: var(--md-default-fg-color);
+  border: 1px solid rgba(230,180,75,.35);
+}
+
+.zivi-badge.cyan {
+  background: rgba(108,211,230,.16);
+  border-color: rgba(108,211,230,.38);
+}
+
+.zivi-kicker {
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-size: .72rem;
+  font-weight: 900;
+  color: var(--md-accent-fg-color);
+}
+
+.zivi-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .8rem 0 1.1rem;
+}
+
+.zivi-figure {
+  margin: 1.2rem 0;
+}
+
+.zivi-figure figcaption {
+  margin-top: .45rem;
+  color: var(--md-default-fg-color--light);
+  font-size: .86rem;
+}
+
+.zivi-signal-flow {
+  font-size: .92rem;
+}
+
+.md-typeset table:not([class]) {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0,0,0,.10);
+}
+
+.md-typeset table:not([class]) th {
+  background: rgba(25,80,45,.18);
+  font-weight: 900;
+}
+
+.md-typeset code {
+  border-radius: 6px;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 14px;
+}
+
+.md-typeset .admonition.note,
+.md-typeset details.note {
+  border-color: var(--zivi-gold-500);
+}
+
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-color: var(--zivi-cyan-400);
+}
+
+.md-typeset .tabbed-set {
+  margin: 1rem 0;
+}
+
+/* Language landing cards */
+.zivi-language-grid .zivi-card a {
+  font-weight: 900;
+}
+
+/* Footer polish */
+.md-footer-meta {
+  border-top: 1px solid rgba(230,180,75,.20);
 }
 
 @media (max-width: 880px) {
   .zivi-hero {
     grid-template-columns: 1fr;
   }
-
   .zivi-button {
     width: 100%;
     text-align: center;

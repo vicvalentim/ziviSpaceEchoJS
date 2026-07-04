@@ -1,5 +1,10 @@
 # Conceito
 
+<figure class="zivi-figure">
+  <img src="../assets/images/screenshot-main.png" alt="Interface principal do ziviSpaceEcho">
+  <figcaption>O plugin é organizado como um gabinete performático: seletor de modo, temporização, comportamento de fita, reverb de mola e saída permanecem visíveis em conjunto.</figcaption>
+</figure>
+
 ## Um modelo tocável de máquina de fita
 
 ziviSpaceEcho é concebido como um **instrumento musical de delay de fita**, não como uma cópia circuito-a-circuito de um equipamento histórico.
@@ -24,16 +29,14 @@ As cabeças não são tratadas como delays independentes. Seus tempos derivam de
 
 ## Tempo como comportamento
 
-ziviSpaceEcho oferece quatro modos de temporização:
+| Modo | Finalidade | Resultado musical |
+|---|---|---|
+| RE-201 Motor | Trata Repeat Rate como controle de velocidade de motor. | Gestual e próximo de uma lógica de hardware. |
+| Manual ms | Faz a cabeça principal seguir um tempo explícito. | Preciso e repetível. |
+| Tempo Sync | Converte divisões do andamento do host em comportamento de fita. | Compatível com produção em grid. |
+| Tap Tempo | Converte toques performáticos em comportamento de fita. | Tempo corporal e de performance. |
 
-| Modo | Finalidade |
-|---|---|
-| RE-201 Motor | Trata Repeat Rate como controle de velocidade de motor. |
-| Manual ms | Faz a cabeça principal seguir um tempo explícito em milissegundos. |
-| Tempo Sync | Converte divisões do andamento do host em comportamento de fita. |
-| Tap Tempo | Converte gestos de performance em comportamento de fita. |
-
-## Reverb de mola como ramificação paralela
+## Reverb de mola como ramo paralelo
 
 O reverb de mola não é apenas ambiência decorativa. Ele funciona como uma ramificação paralela que pode ser combinada com cabeças de echo ou usada sozinha na posição 12.
 
@@ -49,7 +52,10 @@ A interface é um painel performático estilo gabinete. Ela prioriza:
 - informação dinâmica de tempo;
 - edição numérica somente com mouse.
 
-O editor por mouse é uma decisão específica para REAPER, evitando conflitos com atalhos de teclado do host.
+<figure class="zivi-figure">
+  <img src="../assets/images/screenshot-mode-selector.png" alt="Detalhe do seletor de modo">
+  <figcaption>O seletor de modo é o núcleo do roteamento performático: ele define as cabeças ativas e a combinação com o reverb de mola.</figcaption>
+</figure>
 
 ## O que o plugin não é
 

@@ -13,3 +13,8 @@ Esta página permanece na documentação para receber exemplos curatoriais em ve
 | Echo ambiente com mola | Texturas longas com echo e reverb. |
 | Loop de fita sujo | Saturação, ruído e instabilidade. |
 | Reverb only | Uso da posição 12 como reverb de mola independente. |
+| Vídeo walkthrough | Instalação, controles, modos e exemplos sonoros. |
+
+## Padrão editorial futuro
+
+As demos futuras devem incluir fonte seca, resultado processado, parâmetros visíveis, contexto da sessão no REAPER e versão do plugin usada.

@@ -6,6 +6,8 @@
 - REAPER para macOS, Windows o Linux.
 - El archivo `ziviSpaceEcho.jsfx`.
 
+No se requiere instalador, gestor de paquetes, formato externo de plugin ni ejecución en línea.
+
 ## Instalar
 
 1. Descarga:

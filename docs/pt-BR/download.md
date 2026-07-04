@@ -8,7 +8,7 @@ v7.6.4
 
 <div class="zivi-button-row">
   <a class="zivi-button" href="https://raw.githubusercontent.com/vicvalentim/ziviSpaceEchoJS/main/src/ziviSpaceEcho.jsfx">Baixar ziviSpaceEcho.jsfx</a>
-  <a class="zivi-button secondary" href="../instalacao/">Guia de instalação</a>
+  <a class="zivi-button secondary" href="installation/">Guia de instalação</a>
   <a class="zivi-button info" href="https://github.com/vicvalentim/ziviSpaceEchoJS/releases/latest">Release mais recente no GitHub</a>
 </div>
 

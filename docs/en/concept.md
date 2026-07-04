@@ -1,5 +1,10 @@
 # Concept
 
+<figure class="zivi-figure">
+  <img src="assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
+  <figcaption>The plugin is organized as a performance cabinet: mode selection, timing, tape behavior, spring reverb and output control remain visible together.</figcaption>
+</figure>
+
 ## A playable tape-machine model
 
 ziviSpaceEcho is designed as a **musical tape-delay instrument**, not as a component-level clone of a historical circuit.
@@ -26,14 +31,12 @@ The heads are not treated as unrelated delay lines. Their timing is derived from
 
 ziviSpaceEcho offers four timing modes:
 
-| Mode | Purpose |
-|---|---|
-| RE-201 Motor | Treats Repeat Rate as a motor-speed style control. |
-| Manual ms | Lets the leading head follow an explicit delay time. |
-| Tempo Sync | Converts host tempo divisions into tape behavior. |
-| Tap Tempo | Converts performance taps into tape behavior. |
-
-This approach lets the plugin move between historically inspired gestures and modern production workflows.
+| Mode | Purpose | Musical result |
+|---|---|---|
+| RE-201 Motor | Treats Repeat Rate as a motor-speed style control. | Gestural and hardware-like. |
+| Manual ms | Lets the leading head follow an explicit delay time. | Precise and repeatable. |
+| Tempo Sync | Converts host tempo divisions into tape behavior. | Grid-compatible production timing. |
+| Tap Tempo | Converts performance taps into tape behavior. | Live and embodied timing. |
 
 ## Spring reverb as a parallel branch
 
@@ -50,6 +53,11 @@ The interface is a cabinet-style performance panel. It prioritizes:
 - discrete mode and tone switches;
 - dynamic timing information;
 - mouse-only numeric editing.
+
+<figure class="zivi-figure">
+  <img src="assets/images/screenshot-mode-selector.png" alt="Mode selector detail">
+  <figcaption>The mode selector is the core performance routing device: it defines the active playback heads and the spring reverb combination.</figcaption>
+</figure>
 
 The mouse-only editor is a deliberate REAPER-specific design decision. It avoids conflicts with host keyboard shortcuts and transport commands.
 

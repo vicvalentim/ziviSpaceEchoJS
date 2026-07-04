@@ -16,3 +16,19 @@ ziviSpaceEcho declara o uso de ferramentas de inteligência artificial generativ
 As ferramentas de IA generativa foram usadas como instrumentos auxiliares. Elas não substituem autoria, validação técnica, responsabilidade acadêmica ou decisão criativa humana.
 
 O conteúdo final, o código-fonte, a documentação, os metadados e os releases são responsabilidade de Victor Hugo Soares Valentim.
+
+## Usos declarados
+
+A IA generativa apoiou:
+
+- discussão de arquitetura e implementação;
+- assistência de codificação;
+- revisão e depuração;
+- análise de implementação JSFX;
+- revisão de lógica de interface;
+- redação e edição documental;
+- organização de README, changelog, releases, Zenodo e metadados de citação.
+
+## O que a IA não faz
+
+A IA generativa não está embutida no plugin. O JSFX não chama modelo de IA, não depende de serviço de IA e não transmite áudio, sessões ou projetos do usuário para provedor de IA.

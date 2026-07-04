@@ -15,16 +15,59 @@ Seu funcionamento segue o fluxo de uma unidade clássica de echo de fita com mú
 5. as repetições são modeladas por timbre, filtros, idade, saturação e feedback;
 6. uma ramificação de reverb de mola pode operar em paralelo.
 
-## 2. Modos de tempo
+## 2. Visão geral do fluxo de sinal
+
+```text
+Entrada
+  → pré-amplificação / drive
+  → escrita na fita virtual
+  → cabeças H1 / H2 / H3
+  → timbre e filtros do echo
+  → feedback / intensity
+  → saída do echo
+
+Entrada
+  → ramo de reverb de mola
+  → timbre do reverb
+  → saída do reverb
+
+Echo + Reverb
+  → comportamento estéreo / saída
+  → master
+```
+
+## 3. Regiões da interface
+
+### Cabeçalho
+
+![Cabeçalho](../assets/images/screenshot-header.png)
+
+### Modo / roteamento
+
+![Seletor de modo](../assets/images/screenshot-mode-selector.png)
+
+### Grade principal
+
+![Grade principal](../assets/images/screenshot-main-grid.png)
+
+### Barra inferior
+
+![Barra inferior](../assets/images/screenshot-bottom-bar.png)
+
+### Editor por mouse
+
+![Editor por mouse](../assets/images/screenshot-editor.png)
+
+## 4. Modos de tempo
 
 | Modo | Uso |
 |---|---|
-| RE-201 Motor | Gestos clássicos de velocidade de motor. |
+| RE-201 Motor | Gestos clássicos de velocidade de motor, mudanças performáticas e ecos fora do grid. |
 | Manual ms | Controle preciso em milissegundos. |
 | Tempo Sync | Divisões sincronizadas ao andamento do projeto. |
 | Tap Tempo | Entrada performática por toque. |
 
-## 3. Seletor de modo
+## 5. Seletor de modo
 
 | Posição | Rótulo | Significado |
 |---:|---|---|
@@ -43,16 +86,7 @@ Seu funcionamento segue o fluxo de uma unidade clássica de echo de fita com mú
 
 A posição 12 usa LED azul para separar visualmente o modo reverb-only dos modos de echo.
 
-## 4. Fluxo de edição por mouse
-
-1. Clique no valor numérico abaixo de um knob.
-2. O editor modal abre.
-3. Insira o valor com o teclado numérico na tela.
-4. Clique em `APPLY`.
-
-O editor evita o teclado físico porque o REAPER pode direcionar atalhos para o host.
-
-## 5. Níveis iniciais sugeridos
+## 6. Níveis iniciais sugeridos
 
 ```text
 Intensity: 25–45%
@@ -66,7 +100,7 @@ Master: -6 a -3 dB
 
 Aumente `Intensity` com cuidado, principalmente em tempos longos ou com múltiplas cabeças.
 
-## 6. Citação
+## 7. Citação
 
 ```text
 Valentim, Victor Hugo Soares. ziviSpaceEcho. Version 7.6.4. Zenodo. https://doi.org/10.5281/zenodo.21196512

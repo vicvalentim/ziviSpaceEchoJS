@@ -8,7 +8,7 @@ v7.6.4
 
 <div class="zivi-button-row">
   <a class="zivi-button" href="https://raw.githubusercontent.com/vicvalentim/ziviSpaceEchoJS/main/src/ziviSpaceEcho.jsfx">Download ziviSpaceEcho.jsfx</a>
-  <a class="zivi-button secondary" href="../installation/">Installation guide</a>
+  <a class="zivi-button secondary" href="installation/">Installation guide</a>
   <a class="zivi-button info" href="https://github.com/vicvalentim/ziviSpaceEchoJS/releases/latest">Latest GitHub Release</a>
 </div>
 
@@ -30,6 +30,8 @@ Use this file when you need to keep a fixed build for archival, citation or repr
 
 ## DOI
 
+<div class="zivi-doi-card">
+
 Current archived version DOI:
 
 ```text
@@ -41,6 +43,8 @@ Concept DOI for all versions:
 ```text
 10.5281/zenodo.21195881
 ```
+
+</div>
 
 ## Repository versus plugin name
 

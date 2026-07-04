@@ -4,12 +4,14 @@
 
 ### Changed
 
+- Added MkDocs static internationalization with English, Portuguese (Brazil) and Spanish builds.
 - Revised documentation structure for multilingual publication.
 - Added conceptual documentation page.
 - Updated download and developer notes to v7.6.4.
 - Removed public documentation references to obsolete legacy alias files.
 - Kept demos page as a professional-demo placeholder with clear status.
-- Prepared English, Portuguese (Brazil) and international Spanish documentation sections.
+- Replaced favicon and added a dedicated ziviSpaceEcho documentation logo.
+- Added a new professional light/dark CSS palette for MkDocs Material.
 
 ## v7.6.4
 

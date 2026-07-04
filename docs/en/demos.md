@@ -15,16 +15,6 @@ This page is intentionally kept in the documentation so that future releases can
 | Reverb only | Position 12 as a standalone spring branch. |
 | Video walkthrough | Installation, controls, modes and sound examples. |
 
-## Suggested future files
-
-```text
-docs/assets/audio/classic-vocal-slap.mp3
-docs/assets/audio/dub-feedback-wash.mp3
-docs/assets/audio/ambient-spring-echo.mp3
-docs/assets/audio/dirty-tape-loop.mp3
-docs/assets/audio/reverb-only.mp3
-```
-
 ## Editorial standard for future demos
 
 Future demos should preferably include:

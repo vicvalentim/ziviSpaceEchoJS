@@ -1,6 +1,8 @@
 # ziviSpaceEcho Complete Manual
 
-![ziviSpaceEcho main interface](assets/images/screenshot-main.png)
+<figure class="zivi-figure">
+  <img src="assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
+</figure>
 
 ## 1. Concept
 
@@ -75,18 +77,7 @@ The main grid contains the core continuous parameters:
 
 ### 3.4 Bottom control strip
 
-The bottom strip contains discrete switches:
-
-- Input;
-- Loop;
-- Tape Formula;
-- Tape Age;
-- LFO Wave;
-- Instrument Switch;
-- Echo Cancel;
-- Transport controls.
-
-It also displays dynamic timing information:
+The bottom strip contains discrete switches and timing status:
 
 ```text
 IPS | H1 ms | H2 ms | H3 ms
@@ -100,65 +91,16 @@ Click a numeric value below a knob to open the editor.
 
 ![Mouse-only editor screenshot](assets/images/screenshot-editor.png)
 
-The editor includes:
-
-- selected parameter name;
-- current value;
-- default;
-- min and max;
-- numeric keypad;
-- decimal point;
-- contextual sign toggle;
-- DEL;
-- CLR;
-- DEFAULT;
-- CANCEL;
-- APPLY.
-
 The editor intentionally avoids the hardware keyboard because REAPER may route keyboard shortcuts to the host rather than the JSFX window.
 
 ## 4. Timing modes
 
-### RE-201 Motor
-
-Uses `Repeat Rate` as a motor-speed style parameter.
-
-Best for:
-
-- classic tape echo gestures;
-- performance-style speed changes;
-- non-grid rhythmic echoes;
-- dub feedback riding.
-
-### Manual ms
-
-Uses `Manual Time` as the leading head delay time.
-
-Best for:
-
-- precise delay design;
-- sound design;
-- matching a specific delay time.
-
-### Tempo Sync
-
-Uses the selected sync division.
-
-Best for:
-
-- production work;
-- locked rhythmic patterns;
-- grid-based electronic music.
-
-### Tap Tempo
-
-Uses tap tempo for performance input.
-
-Best for:
-
-- live playing;
-- quickly following a piece without calculating BPM;
-- unstable performance timing.
+| Mode | Best for |
+|---|---|
+| RE-201 Motor | classic tape echo gestures, speed changes, non-grid rhythmic echoes and dub feedback riding. |
+| Manual ms | precise delay design, sound design and matching a specific delay time. |
+| Tempo Sync | production work, locked rhythmic patterns and grid-based electronic music. |
+| Tap Tempo | live playing, following a piece without calculating BPM and unstable performance timing. |
 
 ## 5. Mode selector
 
@@ -211,19 +153,7 @@ For safe exploration:
 3. Enter the target value using the on-screen keypad.
 4. Click `APPLY`.
 
-To reset:
-
-1. Click the numeric value.
-2. Click `DEFAULT`.
-
-To cancel:
-
-1. Click `CANCEL`.
-
-To correct entry:
-
-- `DEL` removes the last numeric input.
-- `CLR` clears the entry.
+To reset, click the numeric value and then `DEFAULT`. To cancel, click `CANCEL`. `DEL` removes the last numeric input and `CLR` clears the current entry.
 
 ## 9. UI mode
 

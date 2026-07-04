@@ -1,5 +1,10 @@
 # Concepto
 
+<figure class="zivi-figure">
+  <img src="../assets/images/screenshot-main.png" alt="Interfaz principal de ziviSpaceEcho">
+  <figcaption>El plugin se organiza como un gabinete de performance: selección de modo, temporización, comportamiento de cinta, reverb de muelles y salida permanecen visibles en conjunto.</figcaption>
+</figure>
+
 ## Un modelo tocable de máquina de cinta
 
 ziviSpaceEcho está diseñado como un **instrumento musical de delay de cinta**, no como una copia circuito por circuito de un equipo histórico.
@@ -22,12 +27,12 @@ Los cabezales no son delays independientes. Sus tiempos derivan de una geometrí
 
 ## Tiempo como comportamiento
 
-| Modo | Finalidad |
-|---|---|
-| RE-201 Motor | Trata Repeat Rate como control de velocidad de motor. |
-| Manual ms | Hace que el cabezal principal siga un tiempo explícito en ms. |
-| Tempo Sync | Convierte divisiones del tempo del host en comportamiento de cinta. |
-| Tap Tempo | Convierte gestos de performance en comportamiento de cinta. |
+| Modo | Finalidad | Resultado musical |
+|---|---|---|
+| RE-201 Motor | Trata Repeat Rate como control de velocidad de motor. | Gestual y cercano a una lógica de hardware. |
+| Manual ms | Hace que el cabezal principal siga un tiempo explícito en ms. | Preciso y repetible. |
+| Tempo Sync | Convierte divisiones del tempo del host en comportamiento de cinta. | Compatible con producción en grilla. |
+| Tap Tempo | Convierte gestos de performance en comportamiento de cinta. | Tiempo corporal y performático. |
 
 ## Reverb de muelles
 
