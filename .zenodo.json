@@ -1,0 +1,41 @@
+{
+  "title": "ziviSpaceEcho",
+  "upload_type": "software",
+  "description": "ziviSpaceEcho is a REAPER JSFX plugin for RE-201 inspired tape echo, spring reverb, dub delay textures and unstable motor-style modulation. It combines a multi-head tape echo structure, a parallel spring reverb branch, tape coloration controls, motor behavior controls and a custom cabinet-style graphical interface.",
+  "creators": [
+    {
+      "name": "Valentim, Victor Hugo Soares",
+      "affiliation": "Universidade Federal do Recôncavo da Bahia, Centro de Cultura, Linguagens e Tecnologias Aplicadas",
+      "orcid": "0000-0002-0282-7947"
+    }
+  ],
+  "version": "7.6.3",
+  "license": "mit",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": [
+    "REAPER",
+    "JSFX",
+    "tape echo",
+    "spring reverb",
+    "dub delay",
+    "audio plugin",
+    "creative coding",
+    "sound art",
+    "music technology",
+    "digital audio",
+    "live electronics"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/vicvalentim/ziviSpaceEchoJS",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://vicvalentim.github.io/ziviSpaceEchoJS/",
+      "relation": "isDocumentedBy",
+      "resource_type": "publication-technicalnote"
+    }
+  ]
+}

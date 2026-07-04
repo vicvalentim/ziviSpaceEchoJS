@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "ziviSpaceEcho"
+message: "If you use ziviSpaceEcho in artistic, academic, technical or pedagogical work, please cite it using the metadata below."
+type: software
+version: "7.6.3"
+license: "MIT"
+repository-code: "https://github.com/vicvalentim/ziviSpaceEchoJS"
+url: "https://vicvalentim.github.io/ziviSpaceEchoJS/"
+abstract: "ziviSpaceEcho is a REAPER JSFX plugin for RE-201 inspired tape echo, spring reverb, dub delay textures and unstable motor-style modulation."
+authors:
+  - family-names: "Valentim"
+    given-names: "Victor Hugo Soares"
+    alias: "Zivito"
+    affiliation: "Universidade Federal do Recôncavo da Bahia, Centro de Cultura, Linguagens e Tecnologias Aplicadas"
+    orcid: "https://orcid.org/0000-0002-0282-7947"
+keywords:
+  - "REAPER"
+  - "JSFX"
+  - "tape echo"
+  - "spring reverb"
+  - "dub delay"
+  - "audio plugin"
+  - "creative coding"
+  - "sound art"
+  - "music technology"
+  - "live electronics"
