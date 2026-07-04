@@ -1,64 +1,182 @@
 # ziviSpaceEcho
 
-> **RE-201 inspired tape echo + spring reverb for REAPER / JSFX.**  
-> Current release: **v7.6.2**  
-> Main plugin file: [`src/ziviSpaceEcho.jsfx`](src/ziviSpaceEcho.jsfx)
-> Repository name: **ziviSpaceEchoJS**  
-> Plugin display name: **ziviSpaceEcho**
+**RE-201 inspired tape echo + spring reverb for REAPER / JSFX.**
+
+[![Release](https://img.shields.io/github/v/release/vicvalentim/ziviSpaceEchoJS?label=release)](https://github.com/vicvalentim/ziviSpaceEchoJS/releases)
+[![Documentation](https://img.shields.io/badge/docs-online-2f6f3e)](https://vicvalentim.github.io/ziviSpaceEchoJS/)
+[![License](https://img.shields.io/github/license/vicvalentim/ziviSpaceEchoJS)](LICENSE)
 
 ![ziviSpaceEcho main interface](docs/assets/images/screenshot-main.png)
 
-## What it is
+## Overview
 
-**ziviSpaceEcho** is a REAPER JSFX plugin for dub echoes, tape-delay textures, spring reverb ambience and unstable motor-style modulation.
+**ziviSpaceEcho** is a REAPER JSFX plugin for tape echo, spring reverb, dub delay textures and unstable motor-style modulation.
 
-It combines a multi-head tape echo model, a parallel spring reverb branch, a custom green cabinet interface and a mouse-only parameter editor designed specifically for REAPER workflows.
+It combines a multi-head tape echo structure, a parallel spring reverb branch, tape coloration controls, motor behavior controls and a custom cabinet-style graphical interface.
+
+The GitHub repository is named **ziviSpaceEchoJS**, while the plugin display name inside REAPER remains **ziviSpaceEcho**.
+
+## Download
+
+Download the latest release:
+
+[https://github.com/vicvalentim/ziviSpaceEchoJS/releases/latest](https://github.com/vicvalentim/ziviSpaceEchoJS/releases/latest)
+
+Recommended file:
+
+```text
+ziviSpaceEcho.jsfx
+```
+
+Versioned archival file:
+
+```text
+ziviSpaceEcho_v7_6_2.jsfx
+```
 
 ## Installation
 
-1. Open REAPER.
-2. Go to **Options → Show REAPER resource path in explorer/finder**.
-3. Open the `Effects` folder.
-4. Copy `src/ziviSpaceEcho.jsfx` into that folder.
-5. Restart REAPER or refresh the FX browser.
-6. Search for `ziviSpaceEcho` in the FX browser.
+1. Download `ziviSpaceEcho.jsfx` from the latest release.
+2. Open REAPER.
+3. Go to **Options → Show REAPER resource path in explorer/finder**.
+4. Open the `Effects` folder.
+5. Copy `ziviSpaceEcho.jsfx` into the `Effects` folder.
+6. Restart REAPER or refresh the FX browser.
+7. Search for `ziviSpaceEcho`.
 
-## Documentation site
+## Main features
 
-The documentation is built with **Material for MkDocs**.
+- RE-201 inspired multi-head tape echo.
+- H1, H2 and H3 playback head combinations.
+- Parallel spring reverb branch.
+- Timing modes:
+  - RE-201 Motor;
+  - Manual ms;
+  - Tempo Sync;
+  - Tap Tempo.
+- Tape character controls:
+  - drive;
+  - noise;
+  - condition;
+  - motor torque;
+  - wow/flutter discrepancy;
+  - tape formula;
+  - tape age;
+  - tape loop length.
+- Echo-only tone shaping:
+  - bass;
+  - treble;
+  - low cut;
+  - high cut.
+- Spring reverb controls:
+  - dwell;
+  - decay;
+  - drip;
+  - bounce;
+  - grain;
+  - reverb bass;
+  - reverb treble.
+- Single original-like or dual stereo operation.
+- Premium cabinet-style graphical interface.
+- Mouse-only numeric editor for precise parameter entry.
 
-Public site:
+## Interface
+
+The graphical interface is organized around a cabinet-style layout:
+
+- a 12-position mode selector;
+- playback head and reverb status LEDs;
+- timing and output sections;
+- main parameter grid for echo, tape, motor, filters and spring controls;
+- bottom control strip for input, tape formula, tape age, loop length, LFO wave and performance switches.
+
+The numeric editor is operated with the mouse through an on-screen keypad. This avoids conflicts with REAPER keyboard shortcuts such as transport, escape and spacebar commands.
+
+## Documentation
+
+Full documentation is available at:
+
+[https://vicvalentim.github.io/ziviSpaceEchoJS/](https://vicvalentim.github.io/ziviSpaceEchoJS/)
+
+The documentation includes:
+
+- installation guide;
+- complete manual;
+- parameter reference;
+- sound design guide;
+- interface gallery;
+- demo area;
+- developer notes;
+- changelog.
+
+## Repository structure
 
 ```text
-https://vicvalentim.github.io/ziviSpaceEchoJS/
+src/
+  ziviSpaceEcho.jsfx
+  ziviSpaceEcho_v7_6_2.jsfx
+  SpaceEcho_RE201_STABLE.jsfx
+
+docs/
+  MkDocs Material documentation source
+
+docs/assets/images/
+  screenshots and visual assets
+
+docs/assets/audio/
+  audio demo assets
+
+docs/assets/stylesheets/
+  custom documentation stylesheet
+
+.github/workflows/
+  documentation deployment workflow
 ```
 
-Local preview:
+## Local documentation preview
+
+To preview the documentation locally:
 
 ```bash
 pip install -r requirements.txt
 mkdocs serve
 ```
 
-Deploy is handled by:
+Then open:
 
 ```text
-.github/workflows/docs.yml
+http://127.0.0.1:8000/
 ```
 
-The workflow builds the `/docs` folder and publishes the static site to the `gh-pages` branch.
+To build the documentation locally:
 
-## GitHub Pages setup
+```bash
+mkdocs build --clean --strict
+```
 
-After pushing this version, configure GitHub Pages as:
+## Current release
+
+Current public release:
 
 ```text
-Settings → Pages
-Source: Deploy from a branch
-Branch: gh-pages
-Folder: / root
+v7.6.2
 ```
+
+Main release assets:
+
+```text
+ziviSpaceEcho.jsfx
+ziviSpaceEcho_v7_6_2.jsfx
+```
+
+The `v7.6.2` release establishes the public **ziviSpaceEchoJS** repository while preserving the internal plugin title as **ziviSpaceEcho**.
 
 ## Disclaimer
 
-This project is an independent, unofficial, inspired-by JSFX effect. Product names, trademarks and references are used only for contextual description. No affiliation, endorsement or authorization is implied.
+ziviSpaceEcho is an independent, unofficial, inspired-by JSFX effect.
+
+Product names, trademarks and references are used only for contextual description. No affiliation, endorsement or authorization is implied.
+
+## License
+
+See [LICENSE](LICENSE).
