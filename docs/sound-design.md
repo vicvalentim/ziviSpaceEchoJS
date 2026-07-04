@@ -1,5 +1,7 @@
 # ziviSpaceEcho Sound Design Guide
 
+These recipes are starting points. Adjust input level, echo volume and master level according to your track.
+
 ## Classic vocal slap
 
 ```text
@@ -12,6 +14,8 @@ Drive: 5–15%
 Noise: 0–8%
 ```
 
+Use position 5 when you want a light spring ambience with the slap.
+
 ## Dub feedback wash
 
 ```text
@@ -23,9 +27,10 @@ Bass: +1 to +4 dB
 Treble: -2 to -6 dB
 Condition: +10 to +40
 W/F: +10 to +35
+Master: -6 dB or lower
 ```
 
-Ride `Repeat Rate` and `Intensity` carefully.
+Ride `Repeat Rate` and `Intensity` carefully. High intensity can become dense quickly.
 
 ## Ambient spring echo
 
@@ -39,6 +44,8 @@ Bounce: 25–55%
 Grain: 20–45%
 ```
 
+Good for guitars, synth pads, sparse percussion and long-form textures.
+
 ## Dirty tape loop
 
 ```text
@@ -49,6 +56,8 @@ Tape Age: Old
 Loop Length: Short or RT-1
 High Cut: negative values
 ```
+
+Use shorter loops for more apparent tape-cycle behavior.
 
 ## Clean production delay
 
@@ -61,6 +70,22 @@ Noise: 0–5%
 Condition: -20 to 0
 Stereo Mode: Dual
 ```
+
+Use this when the plugin needs to sit inside a modern mix without obvious degradation.
+
+## Live electronics instability
+
+```text
+Timing: Tap Tempo or RE-201 Motor
+Mode: 9, 10 or 11
+Intensity: 40–70%
+W/F: +20 to +60
+Motor Torque: -20 to +30
+LFO Depth: 10–35%
+LFO Wave: Random or Triangle
+```
+
+Use moderate feedback and perform the timing controls live.
 
 ## Reverb only
 

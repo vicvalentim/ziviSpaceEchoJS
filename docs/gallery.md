@@ -1,44 +1,44 @@
 # Interface Gallery
 
-Replace these images with your own exported REAPER screenshots when ready.
+This gallery documents the main interface regions of ziviSpaceEcho.
 
 <div class="gallery-grid">
   <div class="gallery-card">
     <img src="../assets/images/screenshot-main.png" alt="Full ziviSpaceEcho interface">
-    <p><strong>Full interface</strong><br>`screenshot-main.png`</p>
+    <p><strong>Full interface</strong><br>Main cabinet-style view with mode selector, parameter grid and bottom strip.</p>
   </div>
   <div class="gallery-card">
     <img src="../assets/images/screenshot-header.png" alt="ziviSpaceEcho header">
-    <p><strong>Header</strong><br>`screenshot-header.png`</p>
+    <p><strong>Header</strong><br>Plugin identity and top interface area.</p>
   </div>
   <div class="gallery-card">
     <img src="../assets/images/screenshot-mode-selector.png" alt="Mode selector">
-    <p><strong>Mode selector</strong><br>`screenshot-mode-selector.png`</p>
+    <p><strong>Mode selector</strong><br>12 positions combining H1, H2, H3 and spring reverb.</p>
   </div>
   <div class="gallery-card">
     <img src="../assets/images/screenshot-main-grid.png" alt="Main parameter grid">
-    <p><strong>Main parameter grid</strong><br>`screenshot-main-grid.png`</p>
+    <p><strong>Main parameter grid</strong><br>Echo, tape, motor, filter and spring controls.</p>
   </div>
   <div class="gallery-card">
     <img src="../assets/images/screenshot-editor.png" alt="Mouse-only editor">
-    <p><strong>Mouse-only editor</strong><br>`screenshot-editor.png`</p>
+    <p><strong>Mouse-only editor</strong><br>On-screen numeric editor with apply, cancel, default, delete and clear.</p>
   </div>
   <div class="gallery-card">
     <img src="../assets/images/screenshot-bottom-bar.png" alt="Bottom strip">
-    <p><strong>Bottom control strip</strong><br>`screenshot-bottom-bar.png`</p>
+    <p><strong>Bottom control strip</strong><br>Input, loop, tape formula, age, LFO wave, switches and timing status.</p>
   </div>
   <div class="gallery-card">
     <img src="../assets/images/screenshot-reaper-track.png" alt="REAPER track setup">
-    <p><strong>REAPER track setup</strong><br>`screenshot-reaper-track.png`</p>
+    <p><strong>REAPER track setup</strong><br>Example of the plugin loaded inside a REAPER track workflow.</p>
   </div>
 </div>
 
-## Capture checklist
+## Screenshot maintenance
 
-Save your exported PNG files in:
+Screenshot files are stored in:
 
 ```text
 docs/assets/images/
 ```
 
-Keep the exact file names above and the site will update automatically after commit/push.
+When updating the interface, export new PNG files with the same names so the documentation remains stable.

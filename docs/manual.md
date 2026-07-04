@@ -17,15 +17,38 @@ It follows the workflow of a classic multi-head tape echo unit:
 
 The goal is not strict component-level emulation. The goal is a playable, expressive and stable tape-delay instrument with the same kind of musical decision space: head selection, motor behavior, tape condition, echo intensity, spring ambience and hands-on cabinet-style control.
 
-## 2. Interface regions
+## 2. Signal-flow overview
 
-### 2.1 Header
+```text
+Input stage
+  → preamp / drive
+  → virtual tape write path
+  → playback heads H1 / H2 / H3
+  → echo tone and filtering
+  → feedback / intensity
+  → echo output
+
+Input stage
+  → spring reverb branch
+  → reverb tone
+  → reverb output
+
+Echo + Reverb
+  → stereo/output behavior
+  → master level
+```
+
+The exact routing depends on the mode selector and the continuous controls.
+
+## 3. Interface regions
+
+### 3.1 Header
 
 The top header identifies the plugin and includes the UI mode button.
 
 ![Header screenshot](assets/images/screenshot-header.png)
 
-### 2.2 Mode / Routing
+### 3.2 Mode / Routing
 
 The left section contains:
 
@@ -36,32 +59,32 @@ The left section contains:
 
 ![Mode selector screenshot](assets/images/screenshot-mode-selector.png)
 
-### 2.3 Main parameter grid
+### 3.3 Main parameter grid
 
 The main grid contains the core continuous parameters:
 
-- Echo / Mix
-- Tape Tone
-- Input Stage
-- Motor / Wow-Flutter
-- Filters
-- Spring Tank
-- Reverb Shape
+- Echo / Mix;
+- Tape Tone;
+- Input Stage;
+- Motor / Wow-Flutter;
+- Filters;
+- Spring Tank;
+- Reverb Shape.
 
 ![Main grid screenshot](assets/images/screenshot-main-grid.png)
 
-### 2.4 Bottom control strip
+### 3.4 Bottom control strip
 
 The bottom strip contains discrete switches:
 
-- Input
-- Loop
-- Tape Formula
-- Tape Age
-- LFO Wave
-- Instrument Switch
-- Echo Cancel
-- Transport
+- Input;
+- Loop;
+- Tape Formula;
+- Tape Age;
+- LFO Wave;
+- Instrument Switch;
+- Echo Cancel;
+- Transport controls.
 
 It also displays dynamic timing information:
 
@@ -71,7 +94,7 @@ IPS | H1 ms | H2 ms | H3 ms
 
 ![Bottom strip screenshot](assets/images/screenshot-bottom-bar.png)
 
-### 2.5 Mouse-only parameter editor
+### 3.5 Mouse-only parameter editor
 
 Click a numeric value below a knob to open the editor.
 
@@ -94,7 +117,7 @@ The editor includes:
 
 The editor intentionally avoids the hardware keyboard because REAPER may route keyboard shortcuts to the host rather than the JSFX window.
 
-## 3. Timing modes
+## 4. Timing modes
 
 ### RE-201 Motor
 
@@ -104,7 +127,8 @@ Best for:
 
 - classic tape echo gestures;
 - performance-style speed changes;
-- non-grid rhythmic echoes.
+- non-grid rhythmic echoes;
+- dub feedback riding.
 
 ### Manual ms
 
@@ -133,9 +157,10 @@ Uses tap tempo for performance input.
 Best for:
 
 - live playing;
-- quickly following a piece without calculating BPM.
+- quickly following a piece without calculating BPM;
+- unstable performance timing.
 
-## 4. Mode selector
+## 5. Mode selector
 
 | Position | Label | Meaning |
 |---:|---|---|
@@ -154,7 +179,7 @@ Best for:
 
 Position 12 uses a blue LED to visually separate reverb-only mode from amber echo positions.
 
-## 5. Recommended starting levels
+## 6. Recommended starting levels
 
 ```text
 Intensity: 25–45%
@@ -163,11 +188,23 @@ Reverb Volume: 15–35%
 Drive: 5–20%
 Noise: 0–12%
 Condition: -10 to +20
+Master: -6 to -3 dB
 ```
 
 Increase `Intensity` carefully when using longer times or multiple heads.
 
-## 6. Mouse-only editing workflow
+## 7. Feedback and safety
+
+`Intensity` controls feedback/repeat behavior. High values can produce dense, loud or unstable repeats, especially with multiple heads, high echo volume, strong drive and long delay times.
+
+For safe exploration:
+
+- reduce `Master` before pushing `Intensity`;
+- increase feedback gradually;
+- avoid excessive input level when using high drive;
+- use `Echo Cancel` if the effect becomes too dense.
+
+## 8. Mouse-only editing workflow
 
 1. Click the numeric value below a knob.
 2. The modal editor opens.
@@ -188,11 +225,21 @@ To correct entry:
 - `DEL` removes the last numeric input.
 - `CLR` clears the entry.
 
-## 7. UI mode
+## 9. UI mode
 
 The plugin includes a UI mode parameter:
 
-- Graphic Skin
-- Native Controls
+- Graphic Skin;
+- Native Controls.
 
 Use native controls if you need standard REAPER automation editing or a fallback UI.
+
+## 10. Citation
+
+If you use ziviSpaceEcho in artistic, academic, technical or pedagogical work, cite the archived release:
+
+```text
+Valentim, Victor Hugo Soares. ziviSpaceEcho. Version 7.6.4. Zenodo. https://doi.org/10.5281/zenodo.21196512
+```
+
+Generative AI assistance is disclosed separately and does not constitute authorship.

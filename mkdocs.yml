@@ -85,17 +85,51 @@ extra:
   generator: false
 
 nav:
-  - Home: index.md
-  - Download: download.md
-  - Installation: installation.md
-  - Manual:
-      - Overview: manual.md
-      - Parameter Reference: parameters.md
-      - Sound Design Guide: sound-design.md
-  - Gallery: gallery.md
-  - Demos: demos.md
-  - Technical:
-      - Developer Notes: developer-notes.md
-      - Use of Generative AI: ai-usage.md
-      - Changelog: changelog.md
-      - License: license.md
+  - English:
+      - Home: index.md
+      - Concept: concept.md
+      - Download: download.md
+      - Installation: installation.md
+      - Manual:
+          - Overview: manual.md
+          - Parameter Reference: parameters.md
+          - Sound Design Guide: sound-design.md
+      - Gallery: gallery.md
+      - Demos: demos.md
+      - Technical:
+          - Developer Notes: developer-notes.md
+          - Use of Generative AI: ai-usage.md
+          - Changelog: changelog.md
+          - License: license.md
+  - Português (BR):
+      - Início: pt-BR/index.md
+      - Conceito: pt-BR/conceito.md
+      - Download: pt-BR/download.md
+      - Instalação: pt-BR/instalacao.md
+      - Manual:
+          - Visão geral: pt-BR/manual.md
+          - Referência de parâmetros: pt-BR/parametros.md
+          - Guia de desenho sonoro: pt-BR/desenho-sonoro.md
+      - Galeria: pt-BR/galeria.md
+      - Demos: pt-BR/demos.md
+      - Técnico:
+          - Notas de desenvolvimento: pt-BR/notas-desenvolvimento.md
+          - Uso de IA generativa: pt-BR/uso-ia.md
+          - Changelog: pt-BR/changelog.md
+          - Licença: pt-BR/licenca.md
+  - Español:
+      - Inicio: es/index.md
+      - Concepto: es/concepto.md
+      - Descarga: es/descarga.md
+      - Instalación: es/instalacion.md
+      - Manual:
+          - Panorama general: es/manual.md
+          - Referencia de parámetros: es/parametros.md
+          - Guía de diseño sonoro: es/diseno-sonoro.md
+      - Galería: es/galeria.md
+      - Demos: es/demos.md
+      - Técnico:
+          - Notas de desarrollo: es/notas-desarrollo.md
+          - Uso de IA generativa: es/uso-ia.md
+          - Registro de cambios: es/changelog.md
+          - Licencia: es/licencia.md
