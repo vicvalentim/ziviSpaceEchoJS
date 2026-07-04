@@ -1,7 +1,7 @@
 # Concept
 
 <figure class="zivi-figure">
-  <img src="/assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
+  <img src="assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
   <figcaption>The plugin is organized as a performance cabinet: mode selection, timing, tape behavior, spring reverb and output control remain visible together.</figcaption>
 </figure>
 
@@ -55,7 +55,7 @@ The interface is a cabinet-style performance panel. It prioritizes:
 - mouse-only numeric editing.
 
 <figure class="zivi-figure">
-  <img src="../assets/images/screenshot-mode-selector.png" alt="Mode selector detail">
+  <img src="assets/images/screenshot-mode-selector.png" alt="Mode selector detail">
   <figcaption>The mode selector is the core performance routing device: it defines the active playback heads and the spring reverb combination.</figcaption>
 </figure>
 

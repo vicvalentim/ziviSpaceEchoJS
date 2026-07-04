@@ -1,7 +1,7 @@
 # Concepto
 
 <figure class="zivi-figure">
-  <img src="../assets/images/screenshot-main.png" alt="Interfaz principal de ziviSpaceEcho">
+  <img src="assets/images/screenshot-main.png" alt="Interfaz principal de ziviSpaceEcho">
   <figcaption>El plugin se organiza como un gabinete de performance: selección de modo, temporización, comportamiento de cinta, reverb de muelles y salida permanecen visibles en conjunto.</figcaption>
 </figure>
 
