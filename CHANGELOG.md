@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added explicit generative AI use disclosure in `AI_USAGE.md`.
+- Added documentation page for generative AI use.
+- Updated README with a generative AI use statement.
+- Updated Zenodo metadata description to point to the AI use disclosure.
+- Declared GitHub Copilot and ChatGPT (GPT-5.5 Thinking) by OpenAI as assistive generative AI tools.
+
 ## v7.6.4
 
 ### Added

@@ -96,5 +96,6 @@ nav:
   - Demos: demos.md
   - Technical:
       - Developer Notes: developer-notes.md
+      - Use of Generative AI: ai-usage.md
       - Changelog: changelog.md
       - License: license.md

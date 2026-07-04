@@ -108,6 +108,7 @@ The documentation includes:
 - interface gallery;
 - demo area;
 - developer notes;
+- generative AI use declaration;
 - changelog.
 
 ## DOI
@@ -135,6 +136,16 @@ If you use **ziviSpaceEcho** in artistic, academic, technical or pedagogical wor
 ```text
 Valentim, Victor Hugo Soares. ziviSpaceEcho. Version 7.6.4. Zenodo. https://doi.org/10.5281/zenodo.21196512
 ```
+
+## Use of generative AI
+
+Generative AI tools, including GitHub Copilot and ChatGPT (GPT-5.5 Thinking) by OpenAI, were used as assistive tools during the development, documentation and release-organization process of this repository.
+
+The project author reviewed, edited, validated and approved all AI-assisted outputs and remains fully responsible for the final source code, documentation, metadata and release decisions.
+
+Generative AI tools are not listed as authors, co-authors, creators, maintainers, copyright holders or citation authors.
+
+See [AI_USAGE.md](AI_USAGE.md) for the full declaration.
 
 ## Repository structure
 
