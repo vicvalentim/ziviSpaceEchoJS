@@ -1,7 +1,7 @@
 # Conceito
 
 <figure class="zivi-figure">
-  <img src="../../assets/images/screenshot-main.png" alt="Interface principal do ziviSpaceEcho">
+  <img src="../assets/images/screenshot-main.png" alt="Interface principal do ziviSpaceEcho">
   <figcaption>O plugin é organizado como um gabinete performático: seletor de modo, temporização, comportamento de fita, reverb de mola e saída permanecem visíveis em conjunto.</figcaption>
 </figure>
 
@@ -53,7 +53,7 @@ A interface é um painel performático estilo gabinete. Ela prioriza:
 - edição numérica somente com mouse.
 
 <figure class="zivi-figure">
-  <img src="../../assets/images/screenshot-mode-selector.png" alt="Detalhe do seletor de modo">
+  <img src="../assets/images/screenshot-mode-selector.png" alt="Detalhe do seletor de modo">
   <figcaption>O seletor de modo é o núcleo do roteamento performático: ele define as cabeças ativas e a combinação com o reverb de mola.</figcaption>
 </figure>
 
