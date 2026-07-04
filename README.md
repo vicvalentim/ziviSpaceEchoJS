@@ -118,10 +118,10 @@ Zenodo concept DOI for all versions:
 10.5281/zenodo.21195881
 ```
 
-Version DOI for the v7.6.3 archived release:
+Version DOI for the current archived release:
 
 ```text
-10.5281/zenodo.21195882
+10.5281/zenodo.21196512
 ```
 
 DOI badge:
@@ -133,7 +133,7 @@ DOI badge:
 If you use **ziviSpaceEcho** in artistic, academic, technical or pedagogical work, please cite the archived Zenodo release:
 
 ```text
-Valentim, Victor Hugo Soares. ziviSpaceEcho. Version 7.6.4. Zenodo. Use the Zenodo concept DOI until the v7.6.4 version DOI is assigned: https://doi.org/10.5281/zenodo.21195881
+Valentim, Victor Hugo Soares. ziviSpaceEcho. Version 7.6.4. Zenodo. https://doi.org/10.5281/zenodo.21196512
 ```
 
 ## Repository structure
@@ -196,7 +196,7 @@ ziviSpaceEcho.jsfx
 ziviSpaceEcho_v7_6_4.jsfx
 ```
 
-The `v7.6.4` release aligns the internal plugin metadata with the public release series while preserving the DSP behavior from v7.6.2.
+The `v7.6.4` release aligns the internal plugin metadata, GitHub release, documentation and Zenodo archival record.
 
 ## Disclaimer
 

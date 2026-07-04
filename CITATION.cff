@@ -3,7 +3,7 @@ title: "ziviSpaceEcho"
 message: "If you use ziviSpaceEcho in artistic, academic, technical or pedagogical work, please cite it using the metadata below."
 type: software
 version: "7.6.4"
-doi: "10.5281/zenodo.21195881"
+doi: "10.5281/zenodo.21196512"
 license: "MIT"
 repository-code: "https://github.com/vicvalentim/ziviSpaceEchoJS"
 url: "https://vicvalentim.github.io/ziviSpaceEchoJS/"
