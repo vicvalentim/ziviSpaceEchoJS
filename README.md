@@ -2,7 +2,8 @@
 
 **RE-201 inspired tape echo + spring reverb for REAPER / JSFX.**
 
-[![Release](https://img.shields.io/badge/release-v7.6.2-2f6f3e)](https://github.com/vicvalentim/ziviSpaceEchoJS/releases/tag/v7.6.2)
+[![Release](https://img.shields.io/badge/release-v7.6.3-2f6f3e)](https://github.com/vicvalentim/ziviSpaceEchoJS/releases/tag/v7.6.3)
+[![DOI](https://zenodo.org/badge/1288949374.svg)](https://doi.org/10.5281/zenodo.21195881)
 [![Documentation](https://img.shields.io/badge/documentation-online-2f6f3e)](https://vicvalentim.github.io/ziviSpaceEchoJS/)
 [![License](https://img.shields.io/badge/license-MIT-2f6f3e)](LICENSE)
 
@@ -109,6 +110,32 @@ The documentation includes:
 - developer notes;
 - changelog.
 
+## DOI
+
+Zenodo concept DOI for all versions:
+
+```text
+10.5281/zenodo.21195881
+```
+
+Version DOI for the current archived release:
+
+```text
+10.5281/zenodo.21195882
+```
+
+DOI badge:
+
+[![DOI](https://zenodo.org/badge/1288949374.svg)](https://doi.org/10.5281/zenodo.21195881)
+
+## Citation
+
+If you use **ziviSpaceEcho** in artistic, academic, technical or pedagogical work, please cite the archived Zenodo release:
+
+```text
+Valentim, Victor Hugo Soares. ziviSpaceEcho. Version 7.6.3. Zenodo. https://doi.org/10.5281/zenodo.21195882
+```
+
 ## Repository structure
 
 ```text
@@ -159,7 +186,7 @@ mkdocs build --clean --strict
 Current public release:
 
 ```text
-v7.6.2
+v7.6.3
 ```
 
 Main release assets:
@@ -169,7 +196,7 @@ ziviSpaceEcho.jsfx
 ziviSpaceEcho_v7_6_2.jsfx
 ```
 
-The `v7.6.2` release establishes the public **ziviSpaceEchoJS** repository while preserving the internal plugin title as **ziviSpaceEcho**.
+The `v7.6.3` release establishes Zenodo DOI archiving for the public **ziviSpaceEchoJS** repository while preserving the internal plugin title as **ziviSpaceEcho**.
 
 ## Disclaimer
 
