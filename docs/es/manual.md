@@ -1,6 +1,6 @@
 # Manual completo de ziviSpaceEcho
 
-![Interfaz principal de ziviSpaceEcho](assets/images/screenshot-main.png)
+![Interfaz principal de ziviSpaceEcho](../assets/images/screenshot-main.png)
 
 ## 1. Concepto
 
@@ -38,9 +38,9 @@ Echo + Reverb
 
 ## 3. Regiones de la interfaz
 
-![Selector de modo](assets/images/screenshot-mode-selector.png)
+![Selector de modo](../assets/images/screenshot-mode-selector.png)
 
-![Editor con mouse](assets/images/screenshot-editor.png)
+![Editor con mouse](../assets/images/screenshot-editor.png)
 
 ## 4. Modos de tiempo
 

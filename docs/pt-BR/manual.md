@@ -1,6 +1,6 @@
 # Manual completo do ziviSpaceEcho
 
-![Interface principal do ziviSpaceEcho](assets/images/screenshot-main.png)
+![Interface principal do ziviSpaceEcho](../assets/images/screenshot-main.png)
 
 ## 1. Conceito
 
@@ -40,23 +40,23 @@ Echo + Reverb
 
 ### Cabeçalho
 
-![Cabeçalho](assets/images/screenshot-header.png)
+![Cabeçalho](../assets/images/screenshot-header.png)
 
 ### Modo / roteamento
 
-![Seletor de modo](assets/images/screenshot-mode-selector.png)
+![Seletor de modo](../assets/images/screenshot-mode-selector.png)
 
 ### Grade principal
 
-![Grade principal](assets/images/screenshot-main-grid.png)
+![Grade principal](../assets/images/screenshot-main-grid.png)
 
 ### Barra inferior
 
-![Barra inferior](assets/images/screenshot-bottom-bar.png)
+![Barra inferior](../assets/images/screenshot-bottom-bar.png)
 
 ### Editor por mouse
 
-![Editor por mouse](assets/images/screenshot-editor.png)
+![Editor por mouse](../assets/images/screenshot-editor.png)
 
 ## 4. Modos de tempo
 

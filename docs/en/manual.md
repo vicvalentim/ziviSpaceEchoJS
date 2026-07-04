@@ -1,7 +1,7 @@
 # ziviSpaceEcho Complete Manual
 
 <figure class="zivi-figure">
-  <img src="assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
+  <img src="../assets/images/screenshot-main.png" alt="ziviSpaceEcho main interface">
 </figure>
 
 ## 1. Concept
@@ -48,7 +48,7 @@ The exact routing depends on the mode selector and the continuous controls.
 
 The top header identifies the plugin and includes the UI mode button.
 
-![Header screenshot](assets/images/screenshot-header.png)
+![Header screenshot](../assets/images/screenshot-header.png)
 
 ### 3.2 Mode / Routing
 
@@ -59,7 +59,7 @@ The left section contains:
 - timing mode selection;
 - output and stereo mode controls.
 
-![Mode selector screenshot](assets/images/screenshot-mode-selector.png)
+![Mode selector screenshot](../assets/images/screenshot-mode-selector.png)
 
 ### 3.3 Main parameter grid
 
@@ -73,7 +73,7 @@ The main grid contains the core continuous parameters:
 - Spring Tank;
 - Reverb Shape.
 
-![Main grid screenshot](assets/images/screenshot-main-grid.png)
+![Main grid screenshot](../assets/images/screenshot-main-grid.png)
 
 ### 3.4 Bottom control strip
 
@@ -83,13 +83,13 @@ The bottom strip contains discrete switches and timing status:
 IPS | H1 ms | H2 ms | H3 ms
 ```
 
-![Bottom strip screenshot](assets/images/screenshot-bottom-bar.png)
+![Bottom strip screenshot](../assets/images/screenshot-bottom-bar.png)
 
 ### 3.5 Mouse-only parameter editor
 
 Click a numeric value below a knob to open the editor.
 
-![Mouse-only editor screenshot](assets/images/screenshot-editor.png)
+![Mouse-only editor screenshot](../assets/images/screenshot-editor.png)
 
 The editor intentionally avoids the hardware keyboard because REAPER may route keyboard shortcuts to the host rather than the JSFX window.
 

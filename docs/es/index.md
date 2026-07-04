@@ -22,7 +22,7 @@
     </div>
   </div>
   <div class="zivi-hero-img">
-    <img src="assets/images/screenshot-main.png" alt="Interfaz principal de ziviSpaceEcho">
+    <img src="../assets/images/screenshot-main.png" alt="Interfaz principal de ziviSpaceEcho">
   </div>
 </div>
 
@@ -50,15 +50,15 @@ Combina un modelo de echo de cinta con múltiples cabezales, una rama paralela d
 
 <div class="zivi-gallery-grid">
   <div class="zivi-gallery-card">
-    <img src="assets/images/screenshot-mode-selector.png" alt="Detalle del selector de modo">
+    <img src="../assets/images/screenshot-mode-selector.png" alt="Detalle del selector de modo">
     <p><strong>Selector de modo</strong><br>12 posiciones combinando H1, H2, H3 y reverb de muelles.</p>
   </div>
   <div class="zivi-gallery-card">
-    <img src="assets/images/screenshot-editor.png" alt="Editor con mouse">
+    <img src="../assets/images/screenshot-editor.png" alt="Editor con mouse">
     <p><strong>Editor con mouse</strong><br>Editor numérico en pantalla con aplicar, cancelar, default, borrar y limpiar.</p>
   </div>
   <div class="zivi-gallery-card">
-    <img src="assets/images/screenshot-bottom-bar.png" alt="Barra inferior">
+    <img src="../assets/images/screenshot-bottom-bar.png" alt="Barra inferior">
     <p><strong>Barra inferior</strong><br>Entrada, loop, fórmula de cinta, edad, LFO, interruptores y transporte.</p>
   </div>
 </div>
