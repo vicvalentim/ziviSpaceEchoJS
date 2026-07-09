@@ -2,15 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/"/>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/"/>
     </url>
     <url>
+        <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/acknowledgements/</loc>
+        <lastmod>2026-07-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/acknowledgements/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/acknowledgements/"/>
+        <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/acknowledgements/"/>
+    </url>
+    <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/ai-usage/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/ai-usage/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/ai-usage/"/>
@@ -18,7 +26,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/changelog/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/changelog/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/changelog/"/>
@@ -26,7 +34,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/concept/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/concept/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/concept/"/>
@@ -34,7 +42,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/demos/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/demos/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/demos/"/>
@@ -42,7 +50,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/developer-notes/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/developer-notes/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/developer-notes/"/>
@@ -50,7 +58,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/download/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/download/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/download/"/>
@@ -58,7 +66,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/gallery/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/gallery/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/gallery/"/>
@@ -66,7 +74,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/installation/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/installation/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/installation/"/>
@@ -74,7 +82,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/license/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/license/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/license/"/>
@@ -82,7 +90,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/manual/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/manual/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/manual/"/>
@@ -90,7 +98,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/parameters/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/parameters/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/parameters/"/>
@@ -98,7 +106,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/sound-design/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/sound-design/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/sound-design/"/>
@@ -106,15 +114,23 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/"/>
     </url>
     <url>
+        <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/acknowledgements/</loc>
+        <lastmod>2026-07-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/acknowledgements/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/acknowledgements/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/acknowledgements/"/>
+    </url>
+    <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/ai-usage/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/ai-usage/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/ai-usage/"/>
@@ -122,7 +138,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/changelog/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/changelog/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/changelog/"/>
@@ -130,7 +146,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/concept/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/concept/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/concept/"/>
@@ -138,7 +154,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/demos/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/demos/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/demos/"/>
@@ -146,7 +162,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/developer-notes/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/developer-notes/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/developer-notes/"/>
@@ -154,7 +170,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/download/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/download/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/download/"/>
@@ -162,7 +178,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/gallery/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/gallery/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/gallery/"/>
@@ -170,7 +186,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/installation/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/installation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/installation/"/>
@@ -178,7 +194,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/license/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/license/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/license/"/>
@@ -186,7 +202,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/manual/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/manual/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/manual/"/>
@@ -194,7 +210,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/parameters/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/parameters/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/parameters/"/>
@@ -202,7 +218,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/sound-design/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/sound-design/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/sound-design/"/>
@@ -210,15 +226,23 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/"/>
         <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/"/>
     </url>
     <url>
+        <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/acknowledgements/</loc>
+        <lastmod>2026-07-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/acknowledgements/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/acknowledgements/"/>
+        <xhtml:link rel="alternate" hreflang="pt-BR" href="https://vicvalentim.github.io/ziviSpaceEchoJS/pt-BR/acknowledgements/"/>
+    </url>
+    <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/ai-usage/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/ai-usage/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/ai-usage/"/>
@@ -226,7 +250,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/changelog/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/changelog/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/changelog/"/>
@@ -234,7 +258,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/concept/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/concept/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/concept/"/>
@@ -242,7 +266,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/demos/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/demos/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/demos/"/>
@@ -250,7 +274,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/developer-notes/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/developer-notes/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/developer-notes/"/>
@@ -258,7 +282,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/download/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/download/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/download/"/>
@@ -266,7 +290,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/gallery/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/gallery/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/gallery/"/>
@@ -274,7 +298,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/installation/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/installation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/installation/"/>
@@ -282,7 +306,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/license/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/license/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/license/"/>
@@ -290,7 +314,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/manual/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/manual/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/manual/"/>
@@ -298,7 +322,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/parameters/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/parameters/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/parameters/"/>
@@ -306,7 +330,7 @@
     </url>
     <url>
         <loc>https://vicvalentim.github.io/ziviSpaceEchoJS/es/sound-design/</loc>
-        <lastmod>2026-07-04</lastmod>
+        <lastmod>2026-07-09</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="https://vicvalentim.github.io/ziviSpaceEchoJS/es/sound-design/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://vicvalentim.github.io/ziviSpaceEchoJS/sound-design/"/>
