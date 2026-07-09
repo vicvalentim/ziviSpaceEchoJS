@@ -81,6 +81,7 @@ plugins:
             Demos: Demos
             Technical: Technical
             Developer Notes: Developer Notes
+            Acknowledgements: Acknowledgements
             Use of Generative AI: Use of Generative AI
             Changelog: Changelog
             License: License
@@ -101,6 +102,7 @@ plugins:
             Demos: Demos
             Technical: Técnico
             Developer Notes: Notas de desenvolvimento
+            Acknowledgements: Agradecimentos
             Use of Generative AI: Uso de IA generativa
             Changelog: Registro de mudanças
             License: Licença
@@ -121,6 +123,7 @@ plugins:
             Demos: Demos
             Technical: Técnico
             Developer Notes: Notas de desarrollo
+            Acknowledgements: Agradecimientos
             Use of Generative AI: Uso de IA generativa
             Changelog: Registro de cambios
             License: Licencia
@@ -181,6 +184,7 @@ nav:
   - Demos: demos.md
   - Technical:
       - Developer Notes: developer-notes.md
+      - Acknowledgements: acknowledgements.md
       - Use of Generative AI: ai-usage.md
       - Changelog: changelog.md
       - License: license.md
